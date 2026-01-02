@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+
+
+* {
+  box-sizing: border-box;
+
+  font-family: 'Roboto', sans-serif;
+}
+
+.input_container {
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+
+
+  border-bottom: 2px solid #014F86;
+  border-radius: 20px;
+  box-shadow: black 0px 4px 6px -1px, rgba(30, 29, 29, 0.349) 0px 2px 4px -1px;
+
+  padding: 8px;
+  color: #014F86;
+}
+
+.input_container input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 1rem;
+  color: #014F86;
+  width: 100%;
+}
+
+form {
+  box-shadow: black 0px 10px 4px 6px -1px, rgba(30, 29, 29, 0.349) 0px 2px 4px -1px;
+  border-radius: 16px;
+ 
+}
+@layer utilities {
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}
