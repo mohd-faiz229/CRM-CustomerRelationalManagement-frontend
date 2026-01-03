@@ -46,7 +46,7 @@ Api.interceptors.response.use(
 );
 
 // --- API CALL HELPER ---
-export const callApi = async (url, method = "get", body = null) => {
+export const callApi = async (url, method = "post", body = null) => {
   try {
     const res = await Api({
       url: url, // DO NOT hardcode a path here; use the passed variable
