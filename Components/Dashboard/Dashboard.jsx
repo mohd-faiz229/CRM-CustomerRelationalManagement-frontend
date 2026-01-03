@@ -41,14 +41,14 @@ const Dashboard = () => {
         setIsMobileOpen={setIsMobileOpen}
       />
 
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden w-full">
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
 
-        {/* Header Area - Removed mobile padding to take full width */}
-        <header className="flex items-center w-full">
-          {/* Mobile Menu Trigger - Absolute positioned or tight to edge */}
+        {/* Header Area */}
+        <header className="flex items-center px-4 lg:px-0">
+          {/* Mobile Menu Trigger - Visible only on small screens */}
           <button
             onClick={() => setIsMobileOpen(true)}
-            className="lg:hidden p-3 ml-4 bg-slate-900 rounded-xl border border-white/5 text-blue-500 z-10"
+            className="lg:hidden p-3 mr-2 bg-slate-900 rounded-xl border border-white/5 text-blue-500"
           >
             <FaBars size={20} />
           </button>
@@ -58,8 +58,8 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Main Content - Adjusted padding for full-width feel on mobile */}
-        <main className="flex-1 overflow-y-auto p-0 lg:p-8 no-scrollbar">
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8 no-scrollbar">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -68,7 +68,7 @@ const Dashboard = () => {
               animate="animate"
               exit="exit"
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="h-full w-full px-4 lg:px-0"
+              className="h-full"
             >
               <Routes location={location}>
                 <Route index element={<DashboardHome />} />
