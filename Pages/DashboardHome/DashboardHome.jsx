@@ -17,7 +17,7 @@ const enrollmentData = [
 ];
 
 const placementData = [
-    { name: 'Placed', value: 45 },
+    { name: 'Placed', value: 45 },   
     { name: 'Pending', value: 25 },
     { name: 'In Process', value: 30 },
 ];
@@ -101,7 +101,7 @@ const DashboardHome = () => {
                 <div className="p-6 rounded-3xl bg-white/5 border border-white/10 h-[400px] flex flex-col">
                     <h2 className="text-xl font-semibold mb-6">Student Enrollment</h2>
                     <div className="flex-1 min-h-0">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer className="h-full" width="100%" height="100%">
                             <BarChart data={enrollmentData}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                                 <XAxis dataKey="name" stroke="#94a3b8" tickLine={false} axisLine={false} />

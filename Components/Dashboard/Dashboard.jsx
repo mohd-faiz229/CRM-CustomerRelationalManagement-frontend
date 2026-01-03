@@ -33,33 +33,33 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen flex text-white overflow-hidden bg-slate-950 relative">
-      
+
       {/* Sidebar - Controlled by isMobileOpen */}
-      <Sidebar 
-        userData={user} 
-        isMobileOpen={isMobileOpen} 
-        setIsMobileOpen={setIsMobileOpen} 
+      <Sidebar
+        userData={user}
+        isMobileOpen={isMobileOpen}
+        setIsMobileOpen={setIsMobileOpen}
       />
 
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        
-        {/* Header Area */}
-        <header className="flex items-center px-4 lg:px-0">
-          {/* Mobile Menu Trigger - Visible only on small screens */}
-          <button 
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden w-full">
+
+        {/* Header Area - Removed mobile padding to take full width */}
+        <header className="flex items-center w-full">
+          {/* Mobile Menu Trigger - Absolute positioned or tight to edge */}
+          <button
             onClick={() => setIsMobileOpen(true)}
-            className="lg:hidden p-3 mr-2 bg-slate-900 rounded-xl border border-white/5 text-blue-500"
+            className="lg:hidden p-3 ml-4 bg-slate-900 rounded-xl border border-white/5 text-blue-500 z-10"
           >
             <FaBars size={20} />
           </button>
-          
+
           <div className="flex-1">
             <Header userData={user} />
           </div>
         </header>
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 no-scrollbar">
+        {/* Main Content - Adjusted padding for full-width feel on mobile */}
+        <main className="flex-1 overflow-y-auto p-0 lg:p-8 no-scrollbar">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -68,7 +68,7 @@ const Dashboard = () => {
               animate="animate"
               exit="exit"
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="h-full"
+              className="h-full w-full px-4 lg:px-0"
             >
               <Routes location={location}>
                 <Route index element={<DashboardHome />} />

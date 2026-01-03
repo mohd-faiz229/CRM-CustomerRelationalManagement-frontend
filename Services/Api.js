@@ -1,9 +1,10 @@
 import axios from "axios";
 
 const Api = axios.create({
-  baseURL: "https://crm-customerrelationalmanagement.onrender.com",
+  baseURL: "https://crm-customerrelationalmanagement.onrender.com/api",
   withCredentials: true, // ensures refresh token cookie is sent
 });
+
 
 // =========================
 // REQUEST INTERCEPTOR
