@@ -1,12 +1,13 @@
 import axios from "axios";
 
 // Detect the correct Base URL
-const BASE_URL = process.env.VITE_API_URL || process.env.LOCAL_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || process.env.LOCAL_API_URL;
 
 const Api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL + "/api",
   withCredentials: true,
 });
+
 
 // --- REQUEST INTERCEPTOR ---
 Api.interceptors.request.use(
@@ -29,7 +30,7 @@ Api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         // Use the absolute BASE_URL here to ensure refresh works on both Local and Render
-        const res = await axios.post(`${BASE_URL}/auth/refresh-token`, {}, { withCredentials: true });
+        const res = await axios.post(`${BASE_URL}/api/auth/refresh-token`, {}, { withCredentials: true });
         const newAccessToken = res.data.accessToken;
         localStorage.setItem("accessToken", newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
