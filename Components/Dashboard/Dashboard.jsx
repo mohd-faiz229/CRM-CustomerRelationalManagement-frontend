@@ -7,9 +7,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import DashboardHome from "../../Pages/DashboardHome/DashboardHome.jsx";
 import Profile from "../Profile/Profile.jsx";
 import CreateUser from "../CreateUser/CreateUser.jsx";
+ 
 import { FaBars } from 'react-icons/fa';
+import AddCourse from "../../Pages/AddCourse/AddCourse.jsx"
+import AddStudent from "../../Pages/AddStudent/AddStudent.jsx"
+import Students from "../../Pages/Students/Students.jsx"
+import Courses from "../../Pages/Courses/Courses.jsx"
 
-// Page animation variants
+import NewStudents from '../../Pages/NewStudents/NewStudents.jsx';
+import Placements from '../../Pages/Placements/Placements.jsx';
+import Resumes from '../../Pages/Resumes/Resumes.jsx';
+
+// Page animation variants - Cleaned of invisible characters
 const pageTransitionVariants = {
   initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0 },
@@ -32,34 +41,33 @@ const Dashboard = () => {
   if (!user) return <Navigate to="/Login" replace />;
 
   return (
-    <div className="h-screen flex text-white overflow-hidden bg-slate-950 relative">
-
-      {/* Sidebar - Controlled by isMobileOpen */}
+    <div className="h-screen w-full flex text-white overflow-hidden bg-slate-950 relative">
+      {/* Sidebar - Remains hidden on mobile until isMobileOpen is true */}
       <Sidebar
         userData={user}
         isMobileOpen={isMobileOpen}
         setIsMobileOpen={setIsMobileOpen}
       />
 
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-
-        {/* Header Area */}
-        <header className="flex items-center px-4 lg:px-0">
-          {/* Mobile Menu Trigger - Visible only on small screens */}
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden w-full">
+        {/* Header Container - Full width, no side margins */}
+        <header className="flex items-center w-full bg-slate-950 border-b border-white/5 z-20">
+          {/* Hamburger Menu - Visible only on mobile */}
           <button
             onClick={() => setIsMobileOpen(true)}
-            className="lg:hidden p-3 mr-2 bg-slate-900 rounded-xl border border-white/5 text-blue-500"
+            className="lg:hidden p-4 text-blue-500 hover:bg-white/5 transition-colors"
           >
-            <FaBars size={20} />
+            <FaBars size={22} />
           </button>
 
           <div className="flex-1">
+            {/* Ensure Header.jsx internal styles don't have 'm-3' or 'rounded' if you want it flush */}
             <Header userData={user} />
           </div>
         </header>
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 no-scrollbar">
+        {/* Main Section - Full screen width on mobile */}
+        <main className="flex-1 overflow-y-auto p-0 lg:p-8 no-scrollbar bg-slate-950">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -68,13 +76,19 @@ const Dashboard = () => {
               animate="animate"
               exit="exit"
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="h-full"
+              className="h-full w-full px-4 pt-4 lg:px-0 lg:pt-0"
             >
               <Routes location={location}>
                 <Route index element={<DashboardHome />} />
                 <Route path="profile" element={<Profile employee={user} />} />
                 <Route path="create-user" element={<CreateUser />} />
-                {/* ... other routes ... */}
+                <Route path="add-course" element={<AddCourse />} />
+                <Route path="add-student" element={<AddStudent />} />
+                <Route path="students" element={<Students />} />
+                <Route path="courses" element={<Courses />} />
+                <Route path="new-students" element={<NewStudents />} />
+                <Route path="placements" element={<Placements />} />
+                <Route path="resumes" element={<Resumes />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </motion.div>

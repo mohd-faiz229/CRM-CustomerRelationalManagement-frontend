@@ -1,14 +1,14 @@
 import axios from "axios";
 
+// Detect the correct Base URL
+const BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.LOCAL_API_URL;
+
 const Api = axios.create({
-  baseURL: "https://crm-customerrelationalmanagement.onrender.com/api",
-  withCredentials: true, // ensures refresh token cookie is sent
+  baseURL: BASE_URL,
+  withCredentials: true,
 });
 
-
-// =========================
-// REQUEST INTERCEPTOR
-// =========================
+// --- REQUEST INTERCEPTOR ---
 Api.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("accessToken");
@@ -20,62 +20,41 @@ Api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// =========================
-// RESPONSE INTERCEPTOR
-// =========================
+// --- RESPONSE INTERCEPTOR (For Refreshing Token) ---
 Api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
-    // prevent retry loop
-    if (!originalRequest || originalRequest._retry) {
-      return Promise.reject(error);
-    }
-
-    // check if access token expired (401) and refresh token exists in cookie
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const res = await axios.post(
-          "http://localhost:3000/api/auth/refresh-token",
-          {},
-          { withCredentials: true } // send cookie
-        );
-
+        // Use the absolute BASE_URL here to ensure refresh works on both Local and Render
+        const res = await axios.post(`${BASE_URL}/auth/refresh-token`, {}, { withCredentials: true });
         const newAccessToken = res.data.accessToken;
-
-        if (!newAccessToken) throw new Error("No new access token returned");
-
         localStorage.setItem("accessToken", newAccessToken);
-
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return Api(originalRequest);
       } catch (err) {
-        // refresh token invalid or expired
         localStorage.clear();
         window.location.href = "/login";
         return Promise.reject(err);
       }
     }
-
     return Promise.reject(error);
   }
 );
 
-// =========================
-// API CALL HELPER
-// =========================
+// --- API CALL HELPER ---
 export const callApi = async (url, method = "get", body = null) => {
   try {
     const res = await Api({
-      url: `/api${url}`,
+      url: url, // DO NOT hardcode a path here; use the passed variable
       method,
       data: body,
     });
     return res;
   } catch (error) {
-    console.error("API Error :", error);
+    console.error("API Error:", error);
     throw error;
   }
 };
