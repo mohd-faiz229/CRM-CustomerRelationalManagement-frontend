@@ -52,6 +52,6 @@ export const NavTabItems = [
     {
         label: "Students",
         path: "/dashboard/students",
-        allowedRoles: ["Admin", "Counsellor","Hr"],
+        allowedRoles: ["Admin", "Counsellor", "Hr"],
     }
 ];

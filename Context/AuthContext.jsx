@@ -4,8 +4,6 @@ import Api from "../Services/Api.js";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    // ✅ FIX: Initialize state directly from LocalStorage 
-    // This prevents the "user not logged in" flicker on refresh
     const [user, setUser] = useState(() => {
         const token = localStorage.getItem("accessToken");
         const savedUser = localStorage.getItem("user");
