@@ -1,76 +1,100 @@
-import React, { useEffect, useState } from 'react';
-import { callApi } from "../../Services/Api.js"; // adjust path
+import React, { useEffect, useState } from "react";
+import { callApi } from "../../Services/Api.js";
+import toast from "react-hot-toast";
 
 const Courses = () => {
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchCourses = async () => {
-        try {
-            const res = await callApi("/counsellor/getAllCourses", "GET"); // make sure route is correct
-            console.log("COURSES API RESPONSE 👉", res);
-            setCourses(res?.data.data || []);
-        } catch (error) {
-            console.error("Error fetching courses:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await callApi("/counsellor/courses", "GET");
+                const courseList = res?.data?.data;
+
+                if (!Array.isArray(courseList)) {
+                    throw new Error("Courses data is not an array");
+                }
+
+                setCourses(courseList);
+            } catch (error) {
+                console.error("Courses fetch failed:", error);
+                toast.error(
+                    error?.response?.data?.message || "Failed to load courses"
+                );
+                setCourses([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchCourses();
     }, []);
 
     if (loading) {
-        return <div className="p-10 text-white text-center">Loading courses...</div>;
+        return (
+            <div className="min-h-screen flex items-center justify-center text-white">
+                Loading courses...
+            </div>
+        );
     }
 
-    if (!courses.length) {
-        return <div className="p-10 text-white text-center">No courses available.</div>;
+    if (courses.length === 0) {
+        return (
+            <div className="min-h-screen flex items-center justify-center text-slate-400">
+                No courses available.
+            </div>
+        );
     }
 
     return (
-        <div className="p-10 bg-[#0F172A] min-h-screen">
+        <div className="min-h-screen bg-[#0F172A] p-10">
             <div className="max-w-7xl mx-auto">
-                <h2 className="text-3xl font-bold text-white mb-10">Available Courses</h2>
+                <h2 className="text-3xl font-bold text-white mb-10">
+                    Available Courses
+                </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {courses.map((course) => (
-                        <div
-                            key={course._id}
-                            className="group bg-[#1E293B] rounded-4xl border border-slate-700/50 p-8 shadow-xs hover:border-slate-600 hover:shadow-gray-500 transition-all duration-300"
-                        >
-                            {/* Title */}
-                            <h3 className="text-2xl font-bold text-slate-100 mt-6 mb-3 leading-tight">
-                                {course.courseName}
-                            </h3>
+                    {courses.map((course) => {
+                        // ✅ Safe image URL logic
+                        const imageUrl =
+                            typeof course.courseImage === "string" &&
+                                course.courseImage.startsWith("http")
+                                ? course.courseImage
+                                : "https://via.placeholder.com/600x400";
 
-                            {/* Duration */}
-                            <p className="text-slate-400 text-sm mb-2">Duration: {course.courseDuration}</p>
+                        return (
+                            <div
+                                key={course._id}
+                                className="bg-[#1E293B] border border-slate-700/50 rounded-2xl p-6"
+                            >
+                                {/* IMAGE */}
+                                <img
+                                    src={imageUrl}
+                                    alt={course.courseName || "Course"}
+                                    className="w-full h-40 object-cover rounded-xl"
+                                    loading="lazy"
+                                />
 
-                            {/* Fee */}
-                            <p className="text-slate-400 text-sm mb-4">Fee: ₹{course.courseFee.toLocaleString()}</p>
+                                {/* CONTENT */}
+                                <h3 className="text-xl font-bold text-white mt-4 mb-1">
+                                    {course.courseName || "Untitled Course"}
+                                </h3>
 
-                            {/* Description */}
-                            <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                                {course.courseDescription}
-                            </p>
+                                <p className="text-slate-400 text-sm">
+                                    Duration: {course.courseDuration || "N/A"}
+                                </p>
 
-                            {/* Footer: Image & Action */}
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-700/50">
-                                {course.courseImage && (
-                                    <img
-                                        src={course.courseImage}
-                                        alt={course.courseName}
-                                        className="w-full md:w-24 h-24 rounded-xl object-cover"
-                                    />
-                                )}
-                                <button className="w-full md:w-auto font-bold bg-blue-600 hover:bg-blue-700 text-white border border-slate-700 rounded-xl px-4 py-2 text-sm transition-all">
-                                    View Details
-                                </button>
+                                <p className="text-slate-400 text-sm">
+                                    Fee: ₹{typeof course.courseFee === "number" ? course.courseFee.toLocaleString() : "N/A"}
+                                </p>
+
+                                <p className="text-slate-400 text-sm mt-2">
+                                    {course.courseDescription || "No description provided."}
+                                </p>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </div>

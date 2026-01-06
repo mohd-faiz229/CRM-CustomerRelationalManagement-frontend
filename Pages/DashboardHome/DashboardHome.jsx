@@ -30,7 +30,7 @@ const DashboardHome = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const res = await callApi("/counsellor/getAllStudents", "GET");
+                const res = await callApi("/students", "GET");
                 setStudents(res?.data?.data || []);
             } catch (err) {
                 console.error("Failed to fetch students", err);

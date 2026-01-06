@@ -7,6 +7,7 @@ import axios from "axios";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { callApi } from "../../Services/Api";
 
 // Animation Variants for staggering the input fields
 const formVariants = {
@@ -58,13 +59,13 @@ export const CreateUser = () => {
             formData.append("phone", data.phone);
             formData.append("role", data.role);
             formData.append("password", data.password);
-            if (file) formData.append("file", file);
+            if (file) formData.append("profileImage", file);
 
-            const res = await axios.post(
-                "http://localhost:3000/api/admin/createUser",
-                formData,
-                { headers: { "Content-Type": "multipart/form-data" } }
-            );
+            const res = await callApi("/admin/createUser", "post", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
             toast.success(res.data.message || "Account created successfully");
             navigate("/dashboard");

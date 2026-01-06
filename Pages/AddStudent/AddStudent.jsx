@@ -26,8 +26,7 @@ const AddStudent = () => {
         // 1. Log the data being sent to verify it matches your schema
         console.log("Submitting Data:", formData);
 
-        try {
-            callApi("/counsellor/createStudent", "POST", formData); // OK
+        try { await callApi("/admin/createStudent", "POST", formData); // OK
 
 
             console.log("Success Response:", formData);

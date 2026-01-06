@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://crm-customerrelationalmanagement.onrender.com/api";
+const BASE_URL = "https://crm-customerrelationalmanagement.onrender.com";
 const Api = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,

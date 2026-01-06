@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
   FaSearch,
-  FaFilter,
   FaUserEdit,
-  FaTrashAlt,
   FaCheck,
   FaTimes
 } from 'react-icons/fa';
@@ -22,11 +20,12 @@ const Students = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
+  // Fetch all students (admin & counsellor can access)
   const fetchStudents = async () => {
     try {
-      const res = await callApi("/counsellor/getAllStudents", "GET");
+      const res = await callApi("/admin/students", "GET"); // matches backend route
       setStudents(res.data.data);
-    } catch {
+    } catch (err) {
       toast.error("Failed to load students");
     } finally {
       setLoading(false);
@@ -55,9 +54,9 @@ const Students = () => {
   const saveEdit = async (studentId) => {
     try {
       setUpdating(true);
-      await callApi(`/counsellor/updateStudent/${studentId}`, "PUT", {
+      await callApi(`/updateStudent/${studentId}`, "PUT", {
         status: editedStatus,
-      });
+      }); // backend route for both admin & counsellor
 
       setStudents(prev =>
         prev.map(s =>
@@ -79,7 +78,7 @@ const Students = () => {
 
     try {
       setDeleting(true);
-      await callApi(`/counsellor/deleteStudent/${selectedStudent._id}`, "DELETE");
+      await callApi(`/deleteStudent/${selectedStudent._id}`, "DELETE"); // backend route for admin only
 
       setStudents(prev =>
         prev.filter(s => s._id !== selectedStudent._id)
@@ -105,15 +104,13 @@ const Students = () => {
       {/* Search */}
       <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
         <div className="relative flex-1">
-          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
           <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by name or email..."
-            className="w-full bg-slate-900 border border-white/10 rounded-xl py-2.5 pl-12 pr-4 text-white"
+            className="w-full bg-slate-900 border border-white/10 rounded-xl py-2.5 pl-4 pr-4 text-white"
           />
         </div>
-        
       </div>
 
       {/* Table */}
@@ -147,13 +144,10 @@ const Students = () => {
                   </button>
                   <p className="text-xs text-gray-500">{student.email}</p>
                 </td>
-
                 <td className="p-5 text-gray-300">{student.appliedCourse}</td>
-
                 <td className="p-5 text-gray-300">
                   {new Date(student.createdAt).toLocaleDateString("en-IN")}
                 </td>
-
                 <td className="p-5">
                   {editingId === student._id ? (
                     <select
@@ -171,7 +165,6 @@ const Students = () => {
                     </span>
                   )}
                 </td>
-
                 <td className="p-5 text-center">
                   {editingId === student._id ? (
                     <>
@@ -194,24 +187,14 @@ const Students = () => {
         </table>
       </div>
 
-      {/* ================= STUDENT CARD MODAL ================= */}
+      {/* Student Modal */}
       {selectedStudent && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="w-full max-w-md bg-slate-900 rounded-2xl p-6 border border-white/10 space-y-4">
-            <h2 className="text-xl font-bold text-white">
-              {selectedStudent.name}
-            </h2>
-
+            <h2 className="text-xl font-bold text-white">{selectedStudent.name}</h2>
             <p className="text-gray-400">{selectedStudent.email}</p>
-
-            <p className="text-sm text-gray-300">
-              Course: {selectedStudent.appliedCourse}
-            </p>
-
-            <p className="text-sm text-gray-300">
-              Status: {selectedStudent.status || "Pending"}
-            </p>
-
+            <p className="text-sm text-gray-300">Course: {selectedStudent.appliedCourse}</p>
+            <p className="text-sm text-gray-300">Status: {selectedStudent.status || "Pending"}</p>
             <div className="flex justify-end gap-3 pt-4">
               <button
                 onClick={() => setSelectedStudent(null)}
@@ -219,7 +202,6 @@ const Students = () => {
               >
                 Close
               </button>
-
               <button
                 disabled={deleting}
                 onClick={deleteStudent}

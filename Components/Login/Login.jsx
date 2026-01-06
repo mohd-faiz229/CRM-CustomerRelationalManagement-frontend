@@ -15,6 +15,7 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (loading) return; // prevent double submit
         setLoading(true);
 
         try {
@@ -26,47 +27,36 @@ const Login = () => {
                 email: normalizedEmail,
             });
 
-            console.log("LOGIN RESPONSE →", res);
+            console.log("HTTP STATUS →", res.status);
+            console.log("RESPONSE DATA →", res.data);
 
-            if (!res || !res.data) throw new Error("No response from server");
-
-            const payload = res.data.data;       // backend payload
-            const httpStatus = res.status;       // actual HTTP status
+            const { data } = res.data;
 
             // ---- OTP FLOW ----
-            if (httpStatus === 201 && payload?.email) {
-                toast.success("OTP sent to your email"); // ✅ green toast
-                return navigate("/otp-verify", {
-                    state: { email: payload.email },
-                    replace: true,
-                });
+            if (res.status === 201 && data?.email) {
+                toast.success("OTP sent to your email");
+                return navigate("/otp-verify", { state: { email: data.email }, replace: true });
             }
 
             // ---- VERIFIED LOGIN FLOW ----
-            // ---- VERIFIED LOGIN FLOW ----
-            // ---- VERIFIED LOGIN FLOW ----
-            // ---- VERIFIED LOGIN FLOW ----
-            if (httpStatus === 200 && payload?.accessToken) {
-                const { accessToken, user } = payload;
+            if (res.status === 200 && data?.accessToken && data?.user) {
+                const { accessToken, user } = data;
 
-                // 1. Save keys for legacy components
+                // Save tokens & user
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("userid", user._id);
                 localStorage.setItem("role", user.role);
-
-                // 2. Save the FULL object for AuthContext and Header
                 localStorage.setItem("user", JSON.stringify(user));
 
-                // 3. Update Global Context State immediately
+                // Update context
                 setUser({ ...user, isAuthenticated: true });
 
                 toast.success("Welcome back!");
                 return navigate("/dashboard", { replace: true });
             }
 
-            // Fallback
-            throw new Error(res.data?.message || "Login failed");
-
+            // fallback for any unexpected status
+            toast.error("Login failed");
         } catch (err) {
             const message = err.response?.data?.message || err.message || "Something went wrong";
             toast.error(message);
@@ -76,12 +66,9 @@ const Login = () => {
         }
     };
 
-
-
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
-    };   
-    
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#0f172a] p-8 lg:p-0">
@@ -132,7 +119,7 @@ const Login = () => {
                             disabled={loading}
                             className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50"
                         >
-                            {loading ? "Authenticating..." : "Log In"}
+                            {loading ? "Logging in..." : "Log In"}
                         </button>
                     </form>
                 </div>
