@@ -78,12 +78,11 @@ const Students = () => {
 
     try {
       setDeleting(true);
-      await callApi(`/deleteStudent/${selectedStudent._id}`, "DELETE"); // backend route for admin only
+      callApi(`/counsellor/deleteStudent/${selectedStudent._id}`, "DELETE")
 
       setStudents(prev =>
         prev.filter(s => s._id !== selectedStudent._id)
       );
-
       toast.success("Student deleted");
       setSelectedStudent(null);
     } catch {

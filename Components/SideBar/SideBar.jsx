@@ -25,12 +25,12 @@ const IconMap = {
 };
 
 const Sidebar = ({ userData }) => {
-    
-        const { logout } = useAuth();
-        const [isCollapsed, setIsCollapsed] = useState(false);
-        const [searchQuery, setSearchQuery] = useState("");
-        const [isMobileOpen, setIsMobileOpen] = useState(false); // New state for mobile toggle
-        const location = useLocation();
+
+    const { logout } = useAuth();
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [isMobileOpen, setIsMobileOpen] = useState(false); // New state for mobile toggle
+    const location = useLocation();
 
     // ✅ Match the new data structure (_id instead of id, role trimming)
     const userRole = userData?.role?.toLowerCase().trim() || "";
@@ -60,7 +60,7 @@ const Sidebar = ({ userData }) => {
     return (
         <>
             {/* Mobile Toggle Button - Only visible on small screens */}
-            
+
             <button
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
                 className="lg:hidden fixed bottom-6 right-6 z-[70] w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all"

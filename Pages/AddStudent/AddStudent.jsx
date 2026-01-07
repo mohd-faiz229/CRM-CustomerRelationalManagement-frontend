@@ -2,8 +2,10 @@ import { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { callApi } from '../../Services/Api';
+import { useNavigate } from 'react-router-dom';
 
 const AddStudent = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: '',
         gender: '',
@@ -26,12 +28,14 @@ const AddStudent = () => {
         // 1. Log the data being sent to verify it matches your schema
         console.log("Submitting Data:", formData);
 
-        try { await callApi("/admin/createStudent", "POST", formData); // OK
+        try {
+            await callApi("/admin/createStudent", "POST", formData); // OK
 
 
             console.log("Success Response:", formData);
             toast.success("Student added successfully!");
 
+            navigate("/dashboard/students", { replace: true });
             // Reset form...
         } catch (error) {
             // 2. Log the detailed error object

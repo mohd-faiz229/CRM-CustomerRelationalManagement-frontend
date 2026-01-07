@@ -1,11 +1,13 @@
 import axios from "axios";
 
 const BASE_URL = "https://crm-customerrelationalmanagement.onrender.com/api";
-const Api = axios.create({
+
+const callApi = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
 });
 
+/* ---------- REQUEST INTERCEPTOR ---------- */
 Api.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("accessToken");
@@ -17,13 +19,17 @@ Api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+/* ---------- RESPONSE INTERCEPTOR ---------- */
 Api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
+    // Prevent infinite loop
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh")
     ) {
       originalRequest._retry = true;
 
@@ -34,16 +40,16 @@ Api.interceptors.response.use(
           { withCredentials: true }
         );
 
-        const newAccessToken = res.data.data.accessToken;
+        const newAccessToken = res.data?.data?.accessToken;
+        if (!newAccessToken) throw new Error("No access token");
 
         localStorage.setItem("accessToken", newAccessToken);
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
         return Api(originalRequest);
       } catch (refreshError) {
-        localStorage.clear();
-        window.location.href = "/login";
+        // ❌ DO NOT redirect here
+        localStorage.removeItem("accessToken");
         return Promise.reject(refreshError);
       }
     }
@@ -52,23 +58,4 @@ Api.interceptors.response.use(
   }
 );
 
-export const callApi = async (
-  url,
-  method = "post",
-  body = null,
-  config = {}
-) => {
-  try {
-    const res = await Api({
-      url,
-      method,
-      data: body,
-      ...config,
-    });
-    return res;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export default Api;
+export { callApi };

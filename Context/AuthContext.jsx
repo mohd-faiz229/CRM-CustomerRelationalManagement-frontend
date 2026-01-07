@@ -1,49 +1,64 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import Api from "../Services/Api.js";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import Api from "../Services/Api";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
-        const token = localStorage.getItem("accessToken");
-        const savedUser = localStorage.getItem("user");
+    const navigate = useNavigate();
 
-        if (token && savedUser) {
-            try {
-                const parsedUser = JSON.parse(savedUser);
-                return { ...parsedUser, isAuthenticated: true };
-            } catch (err) {
-                console.error("Auth Initialization Error:", err);
-                return null;
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const initAuth = async () => {
+            const token = localStorage.getItem("accessToken");
+            const savedUser = localStorage.getItem("user");
+
+            if (!token || !savedUser) {
+                setLoading(false);
+                return;
             }
-        }
-        return null;
-    });
 
-    const [loading, setLoading] = useState(false); // Set to false since we initialize in useState
+            // 🔑 CRITICAL FIX
+            Api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+            try {
+                // optional optimistic set
+                setUser(JSON.parse(savedUser));
+
+                // hard validation
+                const res = await Api.get("/auth/me");
+                const freshUser = res.data?.data || res.data;
+
+                setUser(freshUser);
+                localStorage.setItem("user", JSON.stringify(freshUser));
+            } catch (err) {
+                localStorage.clear();
+                setUser(null);
+                navigate("/login", { replace: true });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initAuth();
+    }, []);
 
     const logout = async () => {
-        // 1. CLEAR LOCALLY FIRST
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
-        localStorage.removeItem("userid"); // Clear your legacy key too
-        localStorage.removeItem("role");   // Clear your legacy key too
+        localStorage.clear();
         setUser(null);
 
         try {
-            // 2. Optional server call
-            Api.post("/auth/logout");
-        } catch (err) {
-            console.warn("Logout server call failed, but local session cleared.");
-        }
+            await Api.post("/auth/logout");
+        } catch (_) { }
 
-        // 3. Redirect
-        window.location.href = "/login";
+        navigate("/login", { replace: true });
     };
 
     return (
         <AuthContext.Provider value={{ user, setUser, logout, loading }}>
-            {children}
+            {!loading && children}
         </AuthContext.Provider>
     );
 };
