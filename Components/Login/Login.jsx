@@ -20,7 +20,7 @@ const Login = () => {
 
         try {
             const normalizedEmail = form.email.trim().toLowerCase();
-            const res = await callApi("/auth/login", "post", {
+            const res = await callApi.post("/auth/login", {
                 ...form,
                 email: normalizedEmail,
             });

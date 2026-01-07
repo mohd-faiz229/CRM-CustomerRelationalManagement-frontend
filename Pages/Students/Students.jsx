@@ -23,7 +23,7 @@ const Students = () => {
   // Fetch all students (admin & counsellor can access)
   const fetchStudents = async () => {
     try {
-      const res = await callApi("/admin/students", "GET"); // matches backend route
+      const res = await callApi.get("/counsellor/students"); // matches backend route
       setStudents(res.data.data);
     } catch (err) {
       toast.error("Failed to load students");

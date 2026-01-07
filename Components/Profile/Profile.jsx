@@ -11,7 +11,7 @@ import {
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useAuth } from "../../Context/AuthContext";
-import Api from "../../Services/Api";
+import { callApi } from "../../Services/Api";
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -97,7 +97,7 @@ export default function Profile() {
             const data = new FormData();
             data.append("image", file);
 
-            const uploadRes = await Api.post("/upload/profile", data);
+            const uploadRes = await callApi.post("/upload/profile", data);
             const imageUrl =
                 uploadRes.data?.data?.url || uploadRes.data?.url;
 

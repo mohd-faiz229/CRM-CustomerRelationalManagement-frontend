@@ -30,7 +30,7 @@ const DashboardHome = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const res = await callApi("/counsellor/students", "GET");
+               const res = await callApi.get('/counsellor/students');
                 
                 setStudents(res?.data?.data || []);
             } catch (err) {

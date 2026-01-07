@@ -9,7 +9,7 @@ const Courses = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const res = await callApi("/counsellor/courses", "GET");
+                const res = await callApi.get("/counsellor/courses");
                 const courseList = res?.data?.data;
 
                 if (!Array.isArray(courseList)) {

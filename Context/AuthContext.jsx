@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { callApi } from "../Services/Api";
+import  { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
@@ -11,48 +10,24 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const initAuth = async () => {
-            const token = localStorage.getItem("accessToken");
-            const savedUser = localStorage.getItem("user");
+        const token = localStorage.getItem("accessToken");
+        const savedUser = localStorage.getItem("user");
 
-            if (!token || !savedUser) {
-                setLoading(false);
-                return;
-            }
-
-            // 🔑 CRITICAL FIX
-            Api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
+        if (token && savedUser) {
             try {
-                // optional optimistic set
                 setUser(JSON.parse(savedUser));
-
-                // hard validation
-                const res = await Api.get("/auth/me");
-                const freshUser = res.data?.data || res.data;
-
-                setUser(freshUser);
-                localStorage.setItem("user", JSON.stringify(freshUser));
-            } catch (err) {
+            } catch {
                 localStorage.clear();
                 setUser(null);
-                navigate("/login", { replace: true });
-            } finally {
-                setLoading(false);
             }
-        };
+        }
 
-        initAuth();
+        setLoading(false);
     }, []);
 
-    const logout = async () => {
+    const logout = () => {
         localStorage.clear();
         setUser(null);
-
-        try {
-            await Api.post("/auth/logout");
-        } catch (_) { }
-
         navigate("/login", { replace: true });
     };
 

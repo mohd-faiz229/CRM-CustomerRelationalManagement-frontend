@@ -8,7 +8,7 @@ const callApi = axios.create({
 });
 
 /* ---------- REQUEST INTERCEPTOR ---------- */
-Api.interceptors.request.use(
+callApi.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
@@ -20,7 +20,7 @@ Api.interceptors.request.use(
 );
 
 /* ---------- RESPONSE INTERCEPTOR ---------- */
-Api.interceptors.response.use(
+callApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
