@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { callApi } from '../../Services/Api';
 import { useNavigate } from 'react-router-dom';
+import { FaUserPlus, FaGraduationCap, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaFingerprint } from 'react-icons/fa';
 
 const AddStudent = () => {
     const navigate = useNavigate();
+    const [courses, setCourses] = useState([]); // To fetch real courses
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const [formData, setFormData] = useState({
         name: '',
         gender: '',
@@ -18,132 +21,140 @@ const AddStudent = () => {
         appliedCourse: ""
     });
 
+    // Fetch courses so the user can select a VALID course name/ID
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await callApi.get("/counsellor/courses");
+                setCourses(res.data.data);
+            } catch (err) {
+                console.error("Failed to load courses for dropdown");
+            }
+        };
+        fetchCourses();
+    }, []);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
-        // 1. Log the data being sent to verify it matches your schema
-        console.log("Submitting Data:", formData);
+        // DATA FIX: Ensure 'age' is sent as a Number to satisfy the Backend Controller
+        const submissionData = {
+            ...formData,
+            age: Number(formData.age),
+            email: formData.email.toLowerCase().trim()
+        };
+
+        const toastId = toast.loading("Enrolling student...");
 
         try {
-            await callApi("/admin/createStudent", "POST", formData); // OK
-
-
-            console.log("Success Response:", formData);
-            toast.success("Student added successfully!");
-
+            await callApi.post('/counsellor/createStudent', submissionData);
+            toast.success("Student assigned to your roster!", { id: toastId });
             navigate("/dashboard/students", { replace: true });
-            // Reset form...
         } catch (error) {
-            // 2. Log the detailed error object
-            console.error("FULL ERROR OBJECT:", error);
-
-            if (error.response) {
-                // The server responded with a status code outside the 2xx range
-                console.log("SERVER ERROR DATA:", error.response.data);
-                console.log("SERVER ERROR STATUS:", error.response.status);
-                toast.error(`Server Error: ${error.response.data.message || "Invalid Data"}`);
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.log("NETWORK ERROR (No Response):", error.request);
-                toast.error("Network Error: Cannot reach the server");
-            } else {
-                // Something happened in setting up the request
-                console.log("REQUEST SETUP ERROR:", error.message);
-                toast.error("Request Error: " + error.message);
-            }
+            const errorMsg = error.response?.data?.message || "Invalid Data Provided";
+            toast.error(errorMsg, { id: toastId });
+            console.error("Submission Error:", error.response?.data);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-8 bg-slate-900 border border-white/10 rounded-3xl shadow-xl">
-            <h2 className="text-2xl font-bold text-white mb-6">Enroll New Student</h2>
+        <div className="max-w-5xl mx-auto">
+            <header className="mb-8">
+                <h2 className="text-3xl font-black text-white tracking-tight italic">Enrollment Intake</h2>
+                <p className="text-[10px] text-gray-500 font-black uppercase tracking-[0.3em] mt-1">New Student Registration</p>
+            </header>
 
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Name */}
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-400">Full Name</label>
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} required
-                        className="bg-slate-800 border border-white/5 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                {/* LEFT COLUMN: PRIMARY INFO */}
+                <div className="md:col-span-2 space-y-6">
+                    <div className="bg-[#121418] border border-white/5 p-8 rounded-[2.5rem] shadow-2xl space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <InputField label="Full Name" icon={<FaUserPlus />} name="name" value={formData.name} onChange={handleChange} required />
+                            <InputField label="Email Address" icon={<FaEnvelope />} type="email" name="email" value={formData.email} onChange={handleChange} required />
+                            <InputField label="Phone Number" icon={<FaPhoneAlt />} name="number" value={formData.number} onChange={handleChange} required />
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">Gender Identity</label>
+                                <select name="gender" value={formData.gender} onChange={handleChange} required
+                                    className="w-full bg-[#0a0c10] border border-white/5 rounded-2xl p-4 text-xs font-bold text-white outline-none focus:border-blue-500 transition-all appearance-none">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">Residential Address</label>
+                            <textarea name="address" value={formData.address} onChange={handleChange} required rows="3"
+                                className="w-full bg-[#0a0c10] border border-white/5 rounded-2xl p-4 text-xs font-bold text-white outline-none focus:border-blue-500 transition-all resize-none" />
+                        </div>
+                    </div>
                 </div>
 
-                {/* Email */}
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-400">Email Address</label>
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} required
-                        className="bg-slate-800 border border-white/5 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
-                </div>
+                {/* RIGHT COLUMN: COURSE & STATUS */}
+                <div className="space-y-6">
+                    <div className="bg-[#121418] border border-white/5 p-8 rounded-[2.5rem] shadow-2xl space-y-6">
+                        <InputField label="Age" icon={<FaFingerprint />} type="number" name="age" value={formData.age} onChange={handleChange} required />
+                        <InputField label="Highest Qualification" icon={<FaGraduationCap />} name="quallification" value={formData.quallification} onChange={handleChange} required />
 
-                {/* Gender */}
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-400">Gender</label>
-                    <select name="gender" value={formData.gender} onChange={handleChange} required
-                        className="bg-slate-800 border border-white/5 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none">
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">Target Course</label>
+                            <select name="appliedCourse" value={formData.appliedCourse} onChange={handleChange} required
+                                className="w-full bg-[#0a0c10] border border-white/5 rounded-2xl p-4 text-xs font-bold text-white outline-none focus:border-blue-500 transition-all appearance-none">
+                                <option value="">Select Course</option>
+                                {courses.map(course => (
+                                    <option key={course._id} value={course.courseName}>{course.courseName}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                {/* Age */}
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-400">Age</label>
-                    <input type="number" name="age" value={formData.age} onChange={handleChange} required
-                        className="bg-slate-800 border border-white/5 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
-                </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">Current Status</label>
+                            <select name="status" value={formData.status} onChange={handleChange}
+                                className="w-full bg-[#0a0c10] border border-white/5 rounded-2xl p-4 text-xs font-bold text-white outline-none focus:border-blue-500 transition-all appearance-none">
+                                <option value="pending">Pending</option>
+                                <option value="active">Active</option>
+                                <option value="graduated">Graduated</option>
+                                <option value="dropped">Dropped</option>
+                            </select>
+                        </div>
 
-                {/* Number */}
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-400">Phone Number</label>
-                    <input type="text" name="number" value={formData.number} onChange={handleChange} required
-                        className="bg-slate-800 border border-white/5 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
-                </div>
-
-                {/* Qualification */}
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-400">Qualification</label>
-                    <input type="text" name="quallification" value={formData.quallification} onChange={handleChange} required
-                        className="bg-slate-800 border border-white/5 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
-                </div>
-
-                {/* Course */}
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-400">Applied Course</label>
-                    <input type="text" name="appliedCourse" value={formData.appliedCourse} onChange={handleChange} required
-                        className="bg-slate-800 border border-white/5 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
-                </div>
-
-                {/* Status */}
-                <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-gray-400">Status</label>
-                    <select name="status" value={formData.status} onChange={handleChange}
-                        className="bg-slate-800 border border-white/5 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none">
-                        <option value="pending">Pending</option>
-                        <option value="active">Active</option>
-                        <option value="graduated">Graduated</option>
-                        <option value="dropped">Dropped</option>
-                    </select>
-                </div>
-
-                {/* Address (Full Width) */}
-                <div className="flex flex-col gap-2 md:col-span-2">
-                    <label className="text-sm font-medium text-gray-400">Address</label>
-                    <textarea name="address" value={formData.address} onChange={handleChange} required rows="3"
-                        className="bg-slate-800 border border-white/5 rounded-xl p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"></textarea>
-                </div>
-
-                <div className="md:col-span-2 pt-4">
-                    <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-blue-900/20">
-                        Register Student
-                    </button>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-[1.5rem] text-[10px] font-black text-white uppercase tracking-[0.2em] transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50"
+                        >
+                            {isSubmitting ? "Processing..." : "Sync to Database"}
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     );
 };
+
+// Internal Helper for Inputs
+const InputField = ({ label, icon, type = "text", ...props }) => (
+    <div className="space-y-2">
+        <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest flex items-center gap-2">
+            <span className="text-blue-500">{icon}</span> {label}
+        </label>
+        <input
+            type={type}
+            {...props}
+            className="w-full bg-[#0a0c10] border border-white/5 rounded-2xl p-4 text-xs font-bold text-white outline-none focus:border-blue-500 transition-all"
+        />
+    </div>
+);
 
 export default AddStudent;

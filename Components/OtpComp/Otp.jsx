@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { callApi } from "../../Services/Api";
+import axios from "axios";
 
 const primaryBlue = "#01497C";
 const inputTextColor = "#012A4A";
@@ -28,9 +29,10 @@ export const Otp = () => {
 
     const onSubmit = async (data) => {
         try {
-            const res = await callApi("/auth/otp-verify", "post", {
+            console.log("OTP SUBMIT TRIGGERED", data);
+          const res = await callApi.post("/auth/otp-verify", {
                 email,
-                otp: data.otp, // keep as string
+                otp: data.otp,
             });
 
             if (res.status === 200) {

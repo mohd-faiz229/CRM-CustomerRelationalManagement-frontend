@@ -1,29 +1,27 @@
 import { useState, useEffect } from 'react';
-import {
-  FaSearch,
-  FaUserEdit,
-  FaCheck,
-  FaTimes
-} from 'react-icons/fa';
+import { FaSearch, FaUserEdit, FaCheck, FaTimes, FaTrashAlt, FaPen } from 'react-icons/fa';
 import { callApi } from "../../Services/Api.js";
 import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Students = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [editingId, setEditingId] = useState(null);
+  // Edit States
+  const [editingId, setEditingId] = useState(null); // For inline status edit
   const [editedStatus, setEditedStatus] = useState("");
-  const [updating, setUpdating] = useState(false);
+  const [fullEditStudent, setFullEditStudent] = useState(null); // For full detail modal
 
+  const [updating, setUpdating] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  // Fetch all students (admin & counsellor can access)
   const fetchStudents = async () => {
     try {
-      const res = await callApi.get("/counsellor/students"); // matches backend route
+      setLoading(true);
+      const res = await callApi.get("/counsellor/students");
       setStudents(res.data.data);
     } catch (err) {
       toast.error("Failed to load students");
@@ -41,177 +39,183 @@ const Students = () => {
     student.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const startEdit = (student) => {
-    setEditingId(student._id);
-    setEditedStatus(student.status || "Pending");
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditedStatus("");
-  };
-
-  const saveEdit = async (studentId) => {
+  // --- LOGIC: SAVE UPDATE (Used for both status and full edits) ---
+  const handleUpdate = async (updatedData) => {
     try {
       setUpdating(true);
-      await callApi(`/updateStudent/${studentId}`, "PUT", {
-        status: editedStatus,
-      }); // backend route for both admin & counsellor
+      // Matches backend PUT: /updateStudent/:studentId
+      const res = await callApi.put(`/counsellor/updateStudent/${updatedData._id}`, updatedData);
 
-      setStudents(prev =>
-        prev.map(s =>
-          s._id === studentId ? { ...s, status: editedStatus } : s
-        )
-      );
+      setStudents(prev => prev.map(s => (s._id === updatedData._id ? res.data.data : s)));
+      toast.success("Student updated successfully");
 
-      toast.success("Student updated");
-      cancelEdit();
-    } catch {
-      toast.error("Failed to update student");
+      // Close all edit states
+      setEditingId(null);
+      setFullEditStudent(null);
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Update failed. All fields are required.");
     } finally {
       setUpdating(false);
     }
   };
 
-  const deleteStudent = async () => {
+  const handleDelete = async () => {
     if (!selectedStudent) return;
-
     try {
       setDeleting(true);
-      callApi(`/counsellor/deleteStudent/${selectedStudent._id}`, "DELETE")
-
-      setStudents(prev =>
-        prev.filter(s => s._id !== selectedStudent._id)
-      );
-      toast.success("Student deleted");
+      await callApi.delete(`/counsellor/deleteStudent/${selectedStudent._id}`);
+      setStudents(prev => prev.filter(s => s._id !== selectedStudent._id));
+      toast.success("Student removed");
       setSelectedStudent(null);
-    } catch {
-      toast.error("Failed to delete student");
+    } catch (err) {
+      toast.error("Delete failed");
     } finally {
       setDeleting(false);
     }
   };
 
   return (
-    <div className="space-y-6 pb-10 relative">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">Students</h1>
-        <p className="text-gray-400">Total {students.length} students</p>
-      </div>
-
-      {/* Search */}
-      <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-        <div className="relative flex-1">
+    <div className="space-y-6">
+      {/* HEADER */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-black text-white tracking-tight">Student Directory</h2>
+          <p className="text-[11px] text-gray-500 uppercase tracking-[0.2em] font-bold">Registration Records</p>
+        </div>
+        <div className="flex items-center gap-3 bg-[#121418] border border-white/5 p-1.5 rounded-xl w-full sm:w-72">
+          <FaSearch className="text-gray-500 ml-2" size={12} />
           <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by name or email..."
-            className="w-full bg-slate-900 border border-white/10 rounded-xl py-2.5 pl-4 pr-4 text-white"
+            placeholder="Search records..."
+            className="bg-transparent text-xs font-bold text-white outline-none w-full placeholder:text-gray-600"
           />
         </div>
       </div>
 
-      {/* Table */}
-      <div className="rounded-3xl bg-white/5 border border-white/10 overflow-x-auto">
-        <table className="min-w-[900px] w-full text-left">
-          <thead>
-            <tr className="border-b border-white/10">
-              <th className="p-5 text-xs text-gray-400">Student</th>
-              <th className="p-5 text-xs text-gray-400">Course</th>
-              <th className="p-5 text-xs text-gray-400">Joined</th>
-              <th className="p-5 text-xs text-gray-400">Status</th>
-              <th className="p-5 text-xs text-gray-400 text-center">Actions</th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-white/5">
-            {loading ? (
-              <tr>
-                <td colSpan="5" className="p-20 text-center text-gray-500">
-                  Loading...
-                </td>
+      {/* TABLE */}
+      <div className="bg-[#121418] border border-white/5 rounded-[1.5rem] overflow-hidden shadow-2xl">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-white/[0.02] border-b border-white/5">
+                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-gray-500">Student Info</th>
+                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-gray-500">Course</th>
+                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-gray-500">Status</th>
+                <th className="p-4 text-[10px] font-black uppercase tracking-widest text-gray-500 text-right">Actions</th>
               </tr>
-            ) : filteredStudents.map(student => (
-              <tr key={student._id}>
-                <td className="p-5">
-                  <button
-                    onClick={() => setSelectedStudent(student)}
-                    className="text-white font-bold hover:underline"
-                  >
-                    {student.name}
-                  </button>
-                  <p className="text-xs text-gray-500">{student.email}</p>
-                </td>
-                <td className="p-5 text-gray-300">{student.appliedCourse}</td>
-                <td className="p-5 text-gray-300">
-                  {new Date(student.createdAt).toLocaleDateString("en-IN")}
-                </td>
-                <td className="p-5">
-                  {editingId === student._id ? (
-                    <select
-                      value={editedStatus}
-                      onChange={(e) => setEditedStatus(e.target.value)}
-                      className="bg-slate-900 border border-white/10 rounded-lg text-sm text-white px-2 py-1"
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="Enrolled">Enrolled</option>
-                      <option value="Placed">Placed</option>
-                    </select>
-                  ) : (
-                    <span className="text-sm text-gray-300">
-                      {student.status || "Pending"}
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {loading ? (
+                <tr><td colSpan="4" className="p-20 text-center text-[10px] font-black text-gray-600 uppercase tracking-widest">Loading...</td></tr>
+              ) : filteredStudents.map(student => (
+                <tr key={student._id} className="hover:bg-white/[0.01] group transition-colors">
+                  <td className="p-4">
+                    <div className="flex flex-col">
+                      <span className="text-xs font-black text-white">{student.name}</span>
+                      <span className="text-[10px] text-gray-500 font-bold">{student.email}</span>
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <span className="text-[10px] font-black text-blue-400 bg-blue-400/10 px-2 py-1 rounded border border-blue-400/20">
+                      {student.appliedCourse}
                     </span>
-                  )}
-                </td>
-                <td className="p-5 text-center">
-                  {editingId === student._id ? (
-                    <>
-                      <button onClick={() => saveEdit(student._id)} className="text-green-400 mr-2">
-                        <FaCheck />
-                      </button>
-                      <button onClick={cancelEdit} className="text-red-400">
-                        <FaTimes />
-                      </button>
-                    </>
-                  ) : (
-                    <button onClick={() => startEdit(student)} className="text-gray-400">
-                      <FaUserEdit />
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                  <td className="p-4">
+                    {editingId === student._id ? (
+                      <div className="flex items-center gap-2">
+                        <select
+                          value={editedStatus}
+                          onChange={(e) => setEditedStatus(e.target.value)}
+                          className="bg-[#0a0c10] border border-blue-500/50 rounded-lg text-[10px] font-black text-white px-2 py-1 outline-none"
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="active">Active</option>
+                          <option value="graduated">Graduated</option>
+                          <option value="dropped">Dropped</option>
+                        </select>
+                        <button onClick={() => handleUpdate({ ...student, status: editedStatus })} className="text-emerald-500"><FaCheck size={10} /></button>
+                        <button onClick={() => setEditingId(null)} className="text-red-500"><FaTimes size={10} /></button>
+                      </div>
+                    ) : (
+                      <span onClick={() => { setEditingId(student._id); setEditedStatus(student.status); }} className="cursor-pointer text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition-colors">
+                        {student.status || "pending"}
+                      </span>
+                    )}
+                  </td>
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={() => setFullEditStudent(student)} className="p-2 text-gray-500 hover:text-white hover:bg-white/5 rounded-lg"><FaPen size={12} /></button>
+                      <button onClick={() => setSelectedStudent(student)} className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-500/5 rounded-lg"><FaTrashAlt size={12} /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {/* Student Modal */}
-      {selectedStudent && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="w-full max-w-md bg-slate-900 rounded-2xl p-6 border border-white/10 space-y-4">
-            <h2 className="text-xl font-bold text-white">{selectedStudent.name}</h2>
-            <p className="text-gray-400">{selectedStudent.email}</p>
-            <p className="text-sm text-gray-300">Course: {selectedStudent.appliedCourse}</p>
-            <p className="text-sm text-gray-300">Status: {selectedStudent.status || "Pending"}</p>
-            <div className="flex justify-end gap-3 pt-4">
-              <button
-                onClick={() => setSelectedStudent(null)}
-                className="px-4 py-2 rounded-lg bg-white/10 text-gray-300"
-              >
-                Close
-              </button>
-              <button
-                disabled={deleting}
-                onClick={deleteStudent}
-                className="px-4 py-2 rounded-lg bg-red-600 text-white"
-              >
-                {deleting ? "Deleting..." : "Delete Student"}
-              </button>
-            </div>
+      {/* FULL EDIT MODAL */}
+      <AnimatePresence>
+        {fullEditStudent && (
+          <div className="fixed inset-0 bg-[#0a0c10]/90 backdrop-blur-md flex items-center justify-center z-[60] p-4">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="w-full max-w-lg bg-[#121418] border border-white/10 rounded-[2rem] p-8 shadow-2xl">
+              <h2 className="text-xl font-black text-white mb-6">Edit Student Details</h2>
+              <form className="grid grid-cols-2 gap-4" onSubmit={(e) => { e.preventDefault(); handleUpdate(fullEditStudent); }}>
+                <div className="col-span-2 flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-gray-500 uppercase">Full Name</label>
+                  <input className="bg-[#0a0c10] border border-white/5 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-blue-500"
+                    value={fullEditStudent.name} onChange={(e) => setFullEditStudent({ ...fullEditStudent, name: e.target.value })} />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-gray-500 uppercase">Email</label>
+                  <input className="bg-[#0a0c10] border border-white/5 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-blue-500"
+                    value={fullEditStudent.email} onChange={(e) => setFullEditStudent({ ...fullEditStudent, email: e.target.value })} />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-gray-500 uppercase">Phone</label>
+                  <input className="bg-[#0a0c10] border border-white/5 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-blue-500"
+                    value={fullEditStudent.number} onChange={(e) => setFullEditStudent({ ...fullEditStudent, number: e.target.value })} />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-gray-500 uppercase">Course</label>
+                  <input className="bg-[#0a0c10] border border-white/5 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-blue-500"
+                    value={fullEditStudent.appliedCourse} onChange={(e) => setFullEditStudent({ ...fullEditStudent, appliedCourse: e.target.value })} />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-black text-gray-500 uppercase">Age</label>
+                  <input type="number" className="bg-[#0a0c10] border border-white/5 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-blue-500"
+                    value={fullEditStudent.age} onChange={(e) => setFullEditStudent({ ...fullEditStudent, age: e.target.value })} />
+                </div>
+                <div className="col-span-2 flex justify-end gap-3 mt-6">
+                  <button type="button" onClick={() => setFullEditStudent(null)} className="px-6 py-3 rounded-xl text-[10px] font-black text-gray-500 uppercase hover:text-white transition-all">Cancel</button>
+                  <button type="submit" disabled={updating} className="px-6 py-3 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/20">
+                    {updating ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
+
+      {/* DELETE MODAL (Keep previous logic) */}
+      <AnimatePresence>
+        {selectedStudent && (
+          <div className="fixed inset-0 bg-[#0a0c10]/80 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
+            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-[#121418] border border-white/5 rounded-[2rem] p-8 max-w-sm w-full text-center space-y-6">
+              <div className="w-12 h-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto"><FaTrashAlt size={20} /></div>
+              <h2 className="text-white font-black">Delete {selectedStudent.name}?</h2>
+              <div className="flex gap-3">
+                <button onClick={() => setSelectedStudent(null)} className="flex-1 py-3 text-[10px] font-black text-gray-500 uppercase">Cancel</button>
+                <button onClick={handleDelete} className="flex-1 py-3 bg-red-600 rounded-xl text-[10px] font-black text-white uppercase shadow-lg shadow-red-600/20">Delete</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

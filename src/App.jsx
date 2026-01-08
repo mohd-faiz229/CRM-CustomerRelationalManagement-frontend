@@ -12,7 +12,7 @@ function App() {
     // ✅ Wrap your entire app with AuthContextProvider
     <AuthProvider>
       <div className='h-full bg-linear-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]'>
-        <Toaster position='top' />
+        <Toaster position="top-center" />
 
         <Routes>
           {/* Redirect root "/" to login */}

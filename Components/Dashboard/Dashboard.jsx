@@ -15,22 +15,26 @@ import NewStudents from "../../Pages/NewStudents/NewStudents.jsx";
 import Placements from "../../Pages/Placements/Placements.jsx";
 import Resumes from "../../Pages/Resumes/Resumes.jsx";
 
-
-// ... (Keep all your Page imports here)
-
 const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  if (authLoading) return <div className="h-screen bg-slate-950" />;
+  // High-contrast loader matching your brand colors
+  if (authLoading) {
+    return (
+      <div className="h-screen bg-[#0a0c10] flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   if (!user) return <Navigate to="/Login" replace />;
 
   return (
-    /* The parent 'flex' ensures children sit side-by-side without gaps */
-    <div className="h-screen w-full flex bg-slate-950 text-white overflow-hidden">
-
+    <div className="relative min-h-screen bg-[#0a0c10] text-white overflow-hidden flex font-sans">
+      {/* SIDEBAR */}
       <Sidebar
         userData={user}
         isMobileOpen={isMobileOpen}
@@ -39,29 +43,29 @@ const Dashboard = () => {
         setIsCollapsed={setIsCollapsed}
       />
 
-      {/* flex-1 tells this div to take up ALL remaining space automatically */}
-      <div className="flex flex-col flex-1 min-w-0 h-screen overflow-hidden transition-all duration-500">
-
-        <header className="flex items-center w-full bg-slate-950 border-b border-white/5 z-20">
-         
-          <div className="flex-1">
-            <Header userData={user} />
-          </div>
+      {/* MAIN CONTENT AREA */}
+      <div
+        className="flex flex-col flex-1 min-w-0 h-screen transition-all duration-300 ease-in-out"
+      >
+        {/* HEADER: Glassmorphism effect with deep-black base */}
+        <header className="sticky top-0 w-full bg-[#0a0c10]/80 backdrop-blur-xl border-b border-white/5 z-20">
+          <Header userData={user} />
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 no-scrollbar">
+        {/* MAIN: Tightened padding for a more professional dashboard feel */}
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6 no-scrollbar">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-              transition={{ duration: 0.3 }}
-              className="h-full w-full"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="h-full w-full max-w-[1400px] mx-auto"
             >
               <Routes location={location}>
                 <Route index element={<DashboardHome />} />
-                <Route path="profile" element={<Profile employee={user} />} />
+                <Route path="profile" element={<Profile />} />
                 <Route path="create-user" element={<CreateUser />} />
                 <Route path="add-course" element={<AddCourse />} />
                 <Route path="add-student" element={<AddStudent />} />

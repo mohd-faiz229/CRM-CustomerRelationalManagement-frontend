@@ -61,12 +61,11 @@ export const CreateUser = () => {
             formData.append("password", data.password);
             if (file) formData.append("profileImage", file);
 
-            const res = await callApi("/admin/createUser", "post", formData, {
+           const res = await callApi.post("/admin/createUser", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-
             toast.success(res.data.message || "Account created successfully");
             navigate("/dashboard");
         } catch (err) {
