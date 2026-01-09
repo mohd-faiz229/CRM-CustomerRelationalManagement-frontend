@@ -14,6 +14,7 @@ import Courses from "../../Pages/Courses/Courses.jsx";
 import NewStudents from "../../Pages/NewStudents/NewStudents.jsx";
 import Placements from "../../Pages/Placements/Placements.jsx";
 import Resumes from "../../Pages/Resumes/Resumes.jsx";
+import Footer from '../Footer/Footer.jsx';
 
 const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -78,7 +79,11 @@ const Dashboard = () => {
               </Routes>
             </motion.div>
           </AnimatePresence>
+         
         </main>
+        {/* FOOTER */}
+       
+     
       </div>
     </div>
   );

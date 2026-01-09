@@ -7,7 +7,7 @@ import {
     FaUserGraduate, FaBriefcase, FaBookOpen, FaHistory, FaPlus, FaUsers, FaSearch, FaFileInvoice
 } from 'react-icons/fa';
 import { callApi } from '../../Services/Api';
-
+import Footer from '../../Components/Footer/Footer';
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
 
 const DashboardHome = () => {
@@ -57,9 +57,9 @@ const DashboardHome = () => {
             <header className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl md:text-3xl font-black text-white italic">Overview</h1>
-                    
+
                 </div>
-              
+
             </header>
 
             {/* Top Stats - Improved for Mobile Tapping */}
@@ -69,7 +69,7 @@ const DashboardHome = () => {
                 <StatBox label="Placed" val={students.filter(s => s.status === 'Placed').length} icon={FaBriefcase} color="text-emerald-500" className="col-span-2 md:col-span-1" />
             </div>
 
-          
+
             {/* Main Tables Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                 {/* TABLE 1: RECENT STUDENTS */}
@@ -131,9 +131,15 @@ const DashboardHome = () => {
                             </Pie>
                             <Legend wrapperStyle={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: '900' }} />
                         </PieChart>
+
+                    
                     </ResponsiveContainer>
+                   
+
                 </div>
+              
             </div>
+            <Footer></Footer>
         </div>
     );
 };
@@ -149,11 +155,12 @@ const StatBox = ({ label, val, icon: Icon, color, className = "" }) => (
     </div>
 );
 
+
 const QuickAction = ({ icon, label, bg }) => (
     <div className={`${bg} p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition-transform active:scale-95`}>
         <div className="text-white text-lg">{icon}</div>
         <span className="text-[10px] font-black text-white uppercase tracking-tighter">{label}</span>
     </div>
 );
-
+<Footer />
 export default DashboardHome;

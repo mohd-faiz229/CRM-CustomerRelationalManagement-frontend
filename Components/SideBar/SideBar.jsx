@@ -11,7 +11,7 @@ import { ImBooks } from "react-icons/im";
 import { NavTabItems } from '../../utils/NavTabItems.js';
 
 const IconMap = {
-    "Students": FaGraduationCap,
+   
     "Dashboard": FaHome,
     "Courses": ImBooks,
     "Add Student": FaPlusCircle,
