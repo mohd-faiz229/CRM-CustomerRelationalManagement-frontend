@@ -61,7 +61,7 @@ export const CreateUser = () => {
             formData.append("password", data.password);
             if (file) formData.append("profileImage", file);
 
-           const res = await callApi.post("/admin/createUser", formData, {
+            const res = await callApi.post("/admin/createUser", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -73,7 +73,7 @@ export const CreateUser = () => {
         }
     };
 
-    const glassBase = `w-full text-sm text-white bg-white/5 border border-white/10 px-4 py-3 rounded-xl outline-none transition-all duration-300 focus:bg-white/10 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10`;
+    const glassBase = `w-full text-sm bg-white/5 border border-white/10 px-4 py-3 rounded-xl outline-none transition-all duration-300 focus:bg-white/10 focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10`;
 
     return (
         <div className="w-full flex items-start justify-center p-4 min-h-full">
@@ -86,8 +86,8 @@ export const CreateUser = () => {
             >
                 {/* Header */}
                 <motion.div variants={itemVariants} className="text-center">
-                    <h2 className="text-3xl font-bold text-white tracking-tight">Add New Member</h2>
-                    <p className="text-white/50 text-sm mt-2">Assign roles and set permissions for new staff.</p>
+                    <h2 className="text-3xl font-bold  tracking-tight">Add New Member</h2>
+                    <p className=" text-sm mt-2">Assign roles and set permissions for new staff.</p>
                 </motion.div>
 
                 {/* Profile Image Section */}
@@ -97,21 +97,21 @@ export const CreateUser = () => {
                             {preview ? (
                                 <img src={preview} alt="Preview" className="w-full h-full object-cover" />
                             ) : (
-                                <FaUserTie className="text-white/20 text-4xl" />
+                                <FaUserTie className=" text-4xl" />
                             )}
                         </div>
-                        <label className="absolute bottom-0 right-0 p-2 bg-blue-600 rounded-full text-white cursor-pointer hover:bg-blue-500 transition-all shadow-lg border-2 border-slate-900 active:scale-90">
+                        <label className="absolute bottom-0 right-0 p-2 bg-blue-600 rounded-full  cursor-pointer hover:bg-blue-500 transition-all shadow-lg border-2 border-slate-900 active:scale-90">
                             <FaCamera size={12} />
                             <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                         </label>
                     </div>
-                    <span className="text-[10px] text-white/40 uppercase tracking-widest font-semibold">Profile Photo</span>
+                    <span className="text-[10px] /40 uppercase tracking-widest font-semibold">Profile Photo</span>
                 </motion.div>
 
                 {/* Form Fields Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <motion.div variants={itemVariants} className="flex flex-col gap-1.5">
-                        <label className="text-white/70 text-xs font-medium ml-1">Full Name</label>
+                        <label className=" text-xs font-medium ml-1">Full Name</label>
                         <div className="relative">
                             <input
                                 type="text"
@@ -119,12 +119,12 @@ export const CreateUser = () => {
                                 className={`${glassBase} pr-10 ${errors.name ? 'border-red-400/50' : ''}`}
                                 {...register("name", { required: "Name is required" })}
                             />
-                            <FaUserTie className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20" />
+                            <FaUserTie className="absolute right-3 top-1/2 -translate-y-1/2 " />
                         </div>
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="flex flex-col gap-1.5">
-                        <label className="text-white/70 text-xs font-medium ml-1">Email Address</label>
+                        <label className=" text-xs font-medium ml-1">Email Address</label>
                         <div className="relative">
                             <input
                                 type="email"
@@ -132,14 +132,14 @@ export const CreateUser = () => {
                                 className={`${glassBase} pr-10 ${errors.email ? 'border-red-400/50' : ''}`}
                                 {...register("email", { required: "Email is required" })}
                             />
-                            <BiLogoGmail className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20" />
+                            <BiLogoGmail className="absolute right-3 top-1/2 -translate-y-1/2 " />
                         </div>
                     </motion.div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <motion.div variants={itemVariants} className="flex flex-col gap-1.5">
-                        <label className="text-white/70 text-xs font-medium ml-1">Phone Number</label>
+                        <label className=" text-xs font-medium ml-1">Phone Number</label>
                         <div className="relative">
                             <input
                                 type="tel"
@@ -147,12 +147,12 @@ export const CreateUser = () => {
                                 className={`${glassBase} pr-10 ${errors.phone ? 'border-red-400/50' : ''}`}
                                 {...register("phone", { required: "Phone is required" })}
                             />
-                            <FaPhone className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20" size={12} />
+                            <FaPhone className="absolute right-3 top-1/2 -translate-y-1/2 " size={12} />
                         </div>
                     </motion.div>
 
                     <motion.div variants={itemVariants} className="flex flex-col gap-1.5">
-                        <label className="text-white/70 text-xs font-medium ml-1">Access Role</label>
+                        <label className=" text-xs font-medium ml-1">Access Role</label>
                         <CustomSelect
                             options={[
                                 { value: "admin", label: "Administrator" },
@@ -170,7 +170,7 @@ export const CreateUser = () => {
 
                 {/* Password Field */}
                 <motion.div variants={itemVariants} className="flex flex-col gap-1.5">
-                    <label className="text-white/70 text-xs font-medium ml-1">Security Password</label>
+                    <label className=" text-xs font-medium ml-1">Security Password</label>
                     <div className="relative">
                         <input
                             type={showPassword ? "text" : "password"}
@@ -181,7 +181,7 @@ export const CreateUser = () => {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
                         >
                             {showPassword ? <FaEye size={16} /> : <FaEyeSlash size={16} />}
                         </button>
@@ -196,8 +196,8 @@ export const CreateUser = () => {
                     type="submit"
                     disabled={isSubmitting}
                     className={`w-full mt-4 font-bold py-3.5 rounded-xl transition-all duration-300 shadow-xl ${isSubmitting
-                            ? "bg-white/10 text-white/30 cursor-not-allowed"
-                            : "bg-blue-600 text-white hover:bg-blue-500 shadow-blue-900/20"
+                        ? "cursor-not-allowed"
+                        : "bg-blue-600  hover:bg-blue-500 shadow-blue-900/20"
                         }`}
                 >
                     {isSubmitting ? (

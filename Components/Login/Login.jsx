@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 const Login = () => {
     const navigate = useNavigate();
-    const { setUser } = useContext(AuthContext);
+    const { updateAuthUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState({
         email: localStorage.getItem("loginEmail") || "",
@@ -38,7 +38,11 @@ const Login = () => {
                 localStorage.setItem("userid", user._id);
                 localStorage.setItem("role", user.role);
                 localStorage.setItem("user", JSON.stringify(user));
-                setUser({ ...user, isAuthenticated: true });
+                updateAuthUser({
+                    ...user,
+                    profileImage: user.profileImage || null, // keep object
+                    isAuthenticated: true
+                });
                 toast.success("Welcome back!");
                 return navigate("/dashboard", { replace: true });
             }
@@ -56,35 +60,35 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#05070a] relative overflow-hidden font-sans">
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden font-sans">
             {/* Background Glows (Matching the blue/purple orbs in your image) */}
             <div className="absolute top-[20%] left-[15%] w-72 h-72 bg-blue-600/30 blur-[120px] rounded-full" />
             <div className="absolute bottom-[10%] right-[15%] w-80 h-80 bg-purple-600/20 blur-[130px] rounded-full" />
 
             {/* Main Glass Card */}
-            <div className="relative z-10 w-full max-w-[480px] p-10 bg-[#121418]/70 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl">
+            <div className="relative z-10 w-full max-w-[480px] p-10  backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl">
 
                 <div className="mb-8 flex flex-col items-center justify-center">
                     {/* Logo Section */}
                     <div className="flex items-center gap-2 mb-6 group cursor-default">
                         <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30 ">
-                            <span className="text-white font-brand font-extrabold text-xl">R</span>
+                            <span className="  font-brand font-extrabold text-xl">R</span>
                         </div>
-                        <h1 className="text-gray-200 text-lg font-brand font-bold tracking-tight">
+                        <h1 className=" text-lg font-brand font-bold tracking-tight">
                             Relatio <span className="text-blue-500">CRM</span>
                         </h1>
                     </div>
 
                     {/* Heading Section */}
-                    <h2 className="text-white text-3xl font-brand font-bold mb-2 tracking-tight">
+                    <h2 className=" text-3xl font-brand font-bold mb-2 tracking-tight">
                         Welcome back<span className="text-blue-500">.</span>
                     </h2>
-                    <p className="text-gray-500 text-sm font-medium">Please enter your credentials to continue.</p>
+                    <p className=" text-sm font-medium">Please enter your credentials to continue.</p>
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-6">
                     <div className="space-y-1">
-                        <label className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold ml-1">
+                        <label className="text-[10px]  uppercase tracking-[0.2em] font-bold ml-1">
                             Email Address
                         </label>
                         <input
@@ -94,18 +98,21 @@ const Login = () => {
                             onChange={handleChange}
                             placeholder="name@gmail.com"
                             required
-                            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10  placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
                         />
                     </div>
 
                     <div className="space-y-1">
                         <div className="flex justify-between items-center px-1">
-                            <label className="text-[10px] text-gray-500 uppercase tracking-[0.2em] font-bold">
+                            <label className="text-[10px]  uppercase tracking-[0.2em] font-bold">
                                 Password
                             </label>
-                            <button type="button" className="text-[10px] text-blue-500 hover:text-blue-400 font-bold uppercase tracking-widest">
-                                Forgot?
-                            </button>
+
+
+
+
+
+                            
                         </div>
                         <input
                             type="password"
@@ -114,14 +121,14 @@ const Login = () => {
                             onChange={handleChange}
                             placeholder="••••••••"
                             required
-                            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10  placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl shadow-lg shadow-blue-600/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
+                        className="w-full py-4 bg-blue-600 hover:bg-blue-500  font-bold rounded-2xl shadow-lg shadow-blue-600/20 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
                     >
                         {loading ? "Logging in..." : "Log in"}
                         {!loading && (

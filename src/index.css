@@ -1,55 +1,141 @@
 @import "tailwindcss";
 
+/* 1. Global Design System */
+:root {
+  /* Dark Mode (High-Impact Deep Slate) */
+  --bg-app: radial-gradient(circle at top left, #1e293b, #0f172a);
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-color: #3b82f6;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --input-bg: rgba(15, 23, 42, 0.6);
+  /* Missing in your version */
+  --input-border: rgba(255, 255, 255, 0.1);
+  /* Missing in your version */
+  --shadow-color: rgba(0, 0, 0, 0.5);
 
+  /* Select Option Colors (Browsers hate transparency here) */
+  --option-bg: #1e293b;
+  --option-text: #f8fafc;
+}
 
+:root.light-mode {
+  /* Light Mode (Professional & Clean) */
+  --bg-app: #f8fafc;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+  --accent-color: #2563eb;
+  --card-bg: #ffffff;
+  --input-bg: #f1f5f9;
+  --input-border: #e2e8f0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  --option-bg: #ffffff;
+  --option-text: #0f172a;
+}
+
+/* 2. Base Reset */
 * {
   box-sizing: border-box;
+  font-family: 'Inter', system-ui, sans-serif;
+  /* Roboto looks cheap in CRM; Inter is professional */
+}
 
-  font-family: 'Roboto', sans-serif;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--bg-app);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* 3. Form Layout & Components */
+form {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--input-border);
+  box-shadow: 0px 20px 25px -5px var(--shadow-color);
+  border-radius: 24px;
+  padding: 2.5rem;
+  transition: all 0.4s ease;
+}
+
+.input_field_group {
+  margin-bottom: 1.5rem;
+}
+
+.input_label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  margin-bottom: 0.6rem;
+  color: var(--text-muted);
 }
 
 .input_container {
-  outline: none;
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 100%;
-
-
-  border-bottom: 2px solid #014F86;
-  border-radius: 20px;
-  box-shadow: black 0px 4px 6px -1px, rgba(30, 29, 29, 0.349) 0px 2px 4px -1px;
-
-  padding: 8px;
-  color: #014F86;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 14px;
+  padding: 0.8rem 1.2rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.input_container input {
+.input_container:focus-within {
+  border-color: var(--accent-color);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+}
+
+/* 4. Input, Select, and the "Ghost Option" Fix */
+.input_container input,
+.input_container select {
   border: none;
   outline: none;
-  flex: 1;
-  font-size: 1rem;
-  color: #014F86;
+  background: transparent;
+  color: var(--text-primary);
   width: 100%;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
-form {
-  box-shadow: black 0px 10px 4px 6px -1px, rgba(30, 29, 29, 0.349) 0px 2px 4px -1px;
-  border-radius: 16px;
- 
+/* THE FIX: Targets the invisible text in your dropdown image */
+.input_container select option {
+  background-color: blue;
+  color: white;
 }
+
+/* Enhanced Placeholder */
+::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+/* 5. Logic-Driven Utilities */
 @layer utilities {
 
-  /* Hide scrollbar for Chrome, Safari and Opera */
+  /* Preserving your requested scrollbar hiding */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 
-  /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
+  }
+
+  /* Added a "Glass" utility for extra impact where needed */
+  .glass-effect {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 }

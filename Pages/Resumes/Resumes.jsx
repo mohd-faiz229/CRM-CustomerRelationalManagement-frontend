@@ -20,7 +20,7 @@ const Resumes = () => {
 
       {/* Text Content */}
       <div className="max-w-md space-y-4">
-        <h2 className="text-4xl font-black text-white tracking-tight">
+        <h2 className="text-4xl font-black  tracking-tight">
           Resumes <span className="text-blue-500">Module</span>
         </h2>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest">
@@ -35,7 +35,7 @@ const Resumes = () => {
       {/* Action Button */}
       <button
         onClick={() => navigate('/dashboard')}
-        className="mt-10 flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-300 hover:bg-blue-600 hover:text-white hover:border-blue-500 transition-all duration-300 group font-semibold text-sm"
+        className="mt-10 flex items-center gap-2 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-300 hover:bg-blue-600  hover:border-blue-500 transition-all duration-300 group font-semibold text-sm"
       >
         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
         Back to Dashboard

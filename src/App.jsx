@@ -1,23 +1,29 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-
 import { AuthProvider } from "../Context/AuthContext.jsx";
 import { Login } from '../Components/Login/Login.jsx';
 import { CreateUser } from "../Components/CreateUser/CreateUser.jsx";
 import { Otp } from "../Components/OtpComp/Otp.jsx";
 import Dashboard from "../Components/Dashboard/Dashboard.jsx";
+import { useState, useEffect } from "react";
+import ToggleTheme from "../Components/ToggleTheme/Toggle.jsx";
+
 
 function App() {
+  const [lightMode, setLightMode] = useState(() => {
+    return localStorage.getItem("theme") === "light";
+  });
+
   return (
-    // ✅ Wrap your entire app with AuthContextProvider
     <AuthProvider>
-      <div className='h-full bg-linear-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]'>
+      {/* STRIP OUT the hardcoded 'bg-linear-to-br from-[#0f172a]...' 
+          The background is now handled by your CSS variables.
+      */}
+      <div className="min-h-screen  duration-500">
         <Toaster position="top-center" />
-
+        {/* <ToggleTheme lightMode={lightMode} setLightMode={setLightMode} /> */}
         <Routes>
-          {/* Redirect root "/" to login */}
           <Route path="/" element={<Navigate to="/login" replace />} />
-
           <Route path="/createuser" element={<CreateUser />} />
           <Route path="/login" element={<Login />} />
           <Route path="/otp-verify" element={<Otp />} />

@@ -14,7 +14,6 @@ import Courses from "../../Pages/Courses/Courses.jsx";
 import NewStudents from "../../Pages/NewStudents/NewStudents.jsx";
 import Placements from "../../Pages/Placements/Placements.jsx";
 import Resumes from "../../Pages/Resumes/Resumes.jsx";
-import Footer from '../Footer/Footer.jsx';
 
 const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -22,19 +21,18 @@ const Dashboard = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // High-contrast loader matching your brand colors
   if (authLoading) {
     return (
-      <div className="h-screen bg-[#0a0c10] flex items-center justify-center">
+      <div className="h-screen flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  if (!user) return <Navigate to="/Login" replace />;
+  if (!user) return <Navigate to="/Login" />;
 
   return (
-    <div className="relative min-h-screen bg-[#0a0c10] text-white overflow-hidden flex font-sans">
+    <div className="relative min-h-screen flex font-sans ">
       {/* SIDEBAR */}
       <Sidebar
         userData={user}
@@ -45,24 +43,23 @@ const Dashboard = () => {
       />
 
       {/* MAIN CONTENT AREA */}
-      <div
-        className="flex flex-col flex-1 min-w-0 h-screen transition-all duration-300 ease-in-out"
-      >
-        {/* HEADER: Glassmorphism effect with deep-black base */}
-        <header className="sticky top-0 w-full bg-[#0a0c10]/80 backdrop-blur-xl border-b border-white/5 z-20">
-          <Header userData={user} />
-        </header>
+      <div className="flex flex-col flex-1 min-w-0 h-screen transition-all duration-300">
 
-        {/* MAIN: Tightened padding for a more professional dashboard feel */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6 no-scrollbar">
+        {/* HEADER: Removed the background wrapper so the Header capsule floats naturally */}
+        <div className="sticky top-0 w-full z-20 px-4">
+          <Header userData={user} />
+        </div>
+
+        {/* MAIN CONTENT: Balanced padding and smooth scroll */}
+        <main className="flex-1 overflow-y-auto px-6 pb-10 no-scrollbar">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
-              initial={{ opacity: 0, y: 6 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
-              className="h-full w-full max-w-[1400px] mx-auto"
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="w-full max-w-[1440px] mx-auto"
             >
               <Routes location={location}>
                 <Route index element={<DashboardHome />} />
@@ -79,11 +76,7 @@ const Dashboard = () => {
               </Routes>
             </motion.div>
           </AnimatePresence>
-         
         </main>
-        {/* FOOTER */}
-       
-     
       </div>
     </div>
   );

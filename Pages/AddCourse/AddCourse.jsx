@@ -72,11 +72,11 @@ const AddCourse = () => {
     return (
         <div className="max-w-4xl mx-auto">
             <header className="mb-8">
-                <h2 className="text-3xl font-black text-white tracking-tight italic">Curriculum Expansion</h2>
-                <p className="text-[10px] text-gray-500 font-black uppercase tracking-[0.3em] mt-1">Create New Educational Track</p>
+                <h2 className="text-3xl font-black tracking-tight italic">Curriculum Expansion</h2>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] mt-1">Create New Educational Track</p>
             </header>
 
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#121418] border border-white/5 p-8 rounded-[2.5rem] shadow-2xl">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6  border border-white/5 p-8 rounded-[2.5rem] shadow-2xl">
 
                 {/* Course Name */}
                 <InputField label="Course Title" name="courseName" value={formData.courseName} onChange={handleChange} placeholder="e.g. Full Stack Development" required />
@@ -89,11 +89,11 @@ const AddCourse = () => {
 
                 {/* File Upload Area */}
                 <div className="space-y-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">Course Banner</label>
+                    <label className="text-[10px] font-black uppercase ml-2 tracking-widest">Course Banner</label>
                     <div className="relative group">
                         {!preview ? (
-                            <label className="flex flex-col items-center justify-center w-full h-14 bg-[#0a0c10] border border-dashed border-white/10 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
-                                <div className="flex items-center gap-2 text-gray-500">
+                            <label className="flex flex-col items-center justify-center w-full h-14 border border-dashed border-white/10 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
+                                <div className="flex items-center gap-2">
                                     <FaCloudUploadAlt size={18} />
                                     <span className="text-xs font-bold">Upload Image</span>
                                 </div>
@@ -103,7 +103,7 @@ const AddCourse = () => {
                             <div className="relative h-14 w-full rounded-2xl overflow-hidden border border-white/10">
                                 <img src={preview} alt="Preview" className="w-full h-full object-cover opacity-50" />
                                 <div className="absolute inset-0 flex items-center justify-between px-4">
-                                    <span className="text-[10px] text-white font-bold truncate max-w-[150px]">{formData.courseImage?.name}</span>
+                                    <span className="text-[10px]  font-bold truncate max-w-[150px]">{formData.courseImage?.name}</span>
                                     <button type="button" onClick={() => { setPreview(null); setFormData({ ...formData, courseImage: null }) }} className="text-red-500 hover:text-red-400">
                                         <FaTrash size={12} />
                                     </button>
@@ -115,14 +115,14 @@ const AddCourse = () => {
 
                 {/* Description */}
                 <div className="md:col-span-2 space-y-2">
-                    <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">Course Curriculum Overview</label>
+                    <label className="text-[10px] font-black  uppercase ml-2 tracking-widest">Course Curriculum Overview</label>
                     <textarea
                         name="courseDescription"
                         value={formData.courseDescription}
                         onChange={handleChange}
                         rows="4"
                         placeholder="Detail the modules, technologies, and outcomes..."
-                        className="w-full bg-[#0a0c10] border border-white/5 rounded-2xl p-4 text-xs font-bold text-white outline-none focus:border-blue-500 transition-all resize-none"
+                        className="w-full  border border-white/5 rounded-2xl p-4 text-xs font-bold  outline-none focus:border-blue-500 transition-all resize-none"
                         required
                     />
                 </div>
@@ -130,9 +130,9 @@ const AddCourse = () => {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="md:col-span-2 bg-blue-600 hover:bg-blue-500 py-5 rounded-[1.5rem] text-[10px] font-black text-white uppercase tracking-[0.2em] transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50"
+                    className="md:col-span-2 bg-blue-600 hover:bg-blue-500 py-5 rounded-[1.5rem] text-[10px] font-black  uppercase tracking-[0.2em] transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50"
                 >
-                    {isSubmitting ? "Uploading to Cloud..." : "Finalize and Publish Course"}
+                    {isSubmitting ? "Adding ..." : "Add Course"}
                 </button>
             </form>
         </div>
@@ -142,11 +142,11 @@ const AddCourse = () => {
 // Reusable Input Sub-component
 const InputField = ({ label, type = "text", ...props }) => (
     <div className="space-y-2">
-        <label className="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">{label}</label>
+        <label className="text-[10px] font-black uppercase ml-2 tracking-widest">{label}</label>
         <input
             type={type}
             {...props}
-            className="w-full bg-[#0a0c10] border border-white/5 rounded-2xl p-4 text-xs font-bold text-white outline-none focus:border-blue-500 transition-all"
+            className="w-full  border border-white/5 rounded-2xl p-4 text-xs font-bold  outline-none focus:border-blue-500 transition-all"
         />
     </div>
 );

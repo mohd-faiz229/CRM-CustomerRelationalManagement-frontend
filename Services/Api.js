@@ -22,6 +22,7 @@ callApi.interceptors.request.use(
 /* ---------- RESPONSE INTERCEPTOR ---------- */
 callApi.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
 
@@ -34,7 +35,7 @@ callApi.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const res = await axios.post(
+        const res = await callApi.post(
           `${BASE_URL}/auth/refresh`,
           {},
           { withCredentials: true }
@@ -46,7 +47,7 @@ callApi.interceptors.response.use(
         localStorage.setItem("accessToken", newAccessToken);
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return Api(originalRequest);
+        return callApi(originalRequest);
       } catch (refreshError) {
         // ❌ DO NOT redirect here
         localStorage.removeItem("accessToken");

@@ -8,6 +8,17 @@ export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const normalizeUser = (u) => ({
+        _id: u._id,
+        name: u.name,
+        email: u.email,
+        phone: u.phone,
+        role: u.role,
+        profileImage:
+            typeof u.profileImage === "string"
+                ? u.profileImage
+                : u.profileImage?.url || null
+    });
 
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
@@ -15,16 +26,24 @@ export const AuthProvider = ({ children }) => {
 
         if (token && savedUser) {
             try {
-                setUser(JSON.parse(savedUser));
+                const parsedUser = JSON.parse(savedUser);
+                setUser(normalizeUser(parsedUser));
             } catch {
                 localStorage.clear();
                 setUser(null);
+            } finally {
+                setLoading(false);
             }
         }
 
         setLoading(false);
     }, []);
 
+    const updateAuthUser = (userData) => {
+        const normalized = normalizeUser(userData);
+        setUser(normalized);
+        localStorage.setItem("user", JSON.stringify(normalized));
+    };
     const logout = () => {
         localStorage.clear();
         setUser(null);
@@ -32,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, logout, loading }}>
+        <AuthContext.Provider value={{ user, updateAuthUser, logout, loading }}>
             {!loading && children}
         </AuthContext.Provider>
     );

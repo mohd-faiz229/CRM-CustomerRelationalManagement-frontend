@@ -39,10 +39,10 @@ const Alumini = () => {
             <div className="max-w-7xl mx-auto">
                 <div className="mb-10 flex justify-between items-center">
                     <div>
-                        <h2 className="text-3xl font-bold text-white">Alumni Database</h2>
-                        <p className="text-slate-400 mt-2">Manage placement records and post-hiring career tracking.</p>
+                        <h2 className="text-3xl font-bold ">Alumni Database</h2>
+                        <p className=" mt-2">Manage placement records and post-hiring career tracking.</p>
                     </div>
-                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20">
+                    <button className="bg-blue-600 hover:bg-blue-700  px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20">
                         + Add Record
                     </button>
                 </div>
@@ -66,25 +66,25 @@ const Alumini = () => {
                             </div>
 
                             {/* Main Info */}
-                            <h3 className="text-lg font-bold text-white">{alumni.name}</h3>
+                            <h3 className="text-lg font-bold ">{alumni.name}</h3>
                             <p className="text-slate-500 text-xs font-medium mb-4">{alumni.batch}</p>
 
                             {/* CRM Metrics Grid */}
                             <div className="grid grid-cols-2 gap-4 py-4 border-y border-slate-700/50 mb-4">
                                 <div>
                                     <p className="text-[10px] text-slate-500 uppercase font-bold">Company</p>
-                                    <p className="text-sm text-slate-200 font-medium">{alumni.company}</p>
+                                    <p className="text-sm  font-medium">{alumni.company}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-slate-500 uppercase font-bold">Current CTC</p>
-                                    <p className="text-sm text-slate-200 font-medium">{alumni.salary}</p>
+                                    <p className="text-[10px]  uppercase font-bold">Current CTC</p>
+                                    <p className="text-sm  font-medium">{alumni.salary}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-slate-500 uppercase font-bold">Role</p>
+                                    <p className="text-[10px]  uppercase font-bold">Role</p>
                                     <p className="text-sm text-slate-200 font-medium">{alumni.role}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-slate-500 uppercase font-bold">Mentorship</p>
+                                    <p className="text-[10px] uppercase font-bold">Mentorship</p>
                                     <p className={`text-sm font-medium ${alumni.mentorship ? 'text-emerald-400' : 'text-slate-500'}`}>
                                         {alumni.mentorship ? 'Active' : 'Inactive'}
                                     </p>
@@ -96,7 +96,7 @@ const Alumini = () => {
                                 <span className="text-[11px] text-slate-500">
                                     Last Active: <span className="text-slate-400">{alumni.lastContact}</span>
                                 </span>
-                                <button className="text-blue-400 hover:text-white text-xs font-bold transition-colors">
+                                <button className="text-blue-400  text-xs font-bold transition-colors">
                                     View Full Profile
                                 </button>
                             </div>

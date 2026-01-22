@@ -49,14 +49,14 @@ const DashboardHome = () => {
         };
     }, [students]);
 
-    if (loading) return <div className="p-20 text-center font-black text-gray-500 animate-pulse uppercase tracking-widest">Fetching Data...</div>;
+    if (loading) return <div className="p-20 text-center font-black  animate-pulse uppercase tracking-widest">Fetching Data...</div>;
 
     return (
         <div className="space-y-6 md:space-y-10 pb-20 px-2 sm:px-0">
             {/* Header */}
             <header className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-black text-white italic">Overview</h1>
+                    <h1 className="text-2xl md:text-3xl font-black  italic">Overview</h1>
 
                 </div>
 
@@ -73,18 +73,18 @@ const DashboardHome = () => {
             {/* Main Tables Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                 {/* TABLE 1: RECENT STUDENTS */}
-                <div className="bg-[#121418] border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8">
-                    <h3 className="text-[10px] md:text-sm font-black text-white uppercase tracking-widest flex items-center gap-2 mb-6">
+                <div className="border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8">
+                    <h3 className="text-[10px] md:text-sm font-black  uppercase tracking-widest flex items-center gap-2 mb-6">
                         <FaHistory className="text-blue-500" /> Live Feed
                     </h3>
                     <div className="space-y-4">
                         {students.slice(0, 6).map((s, i) => (
                             <div key={i} className="flex items-center justify-between py-1">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[10px] font-bold text-gray-500">{i + 1}</div>
+                                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold ">{i + 1}</div>
                                     <div>
-                                        <p className="text-xs font-bold text-gray-200">{s.name}</p>
-                                        <p className="text-[9px] text-gray-600 uppercase font-black">{s.courseName || 'General'}</p>
+                                        <p className="text-xs font-bold ">{s.name}</p>
+                                        <p className="text-[9px] uppercase font-black">{s.courseName || 'General'}</p>
                                     </div>
                                 </div>
                                 <div className={`text-[8px] font-black px-2 py-1 rounded uppercase ${s.status === 'Placed' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-orange-500/10 text-orange-500'}`}>
@@ -96,12 +96,12 @@ const DashboardHome = () => {
                 </div>
 
                 {/* TABLE 2: COURSE STATS */}
-                <div className="bg-[#121418] border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8">
-                    <h3 className="text-[10px] md:text-sm font-black text-white uppercase tracking-widest mb-6">Course Availability</h3>
+                <div className="border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8">
+                    <h3 className="text-[10px] md:text-sm font-black  uppercase tracking-widest mb-6">Course Availability</h3>
                     <div className="space-y-3">
                         {courses.slice(0, 5).map((c, i) => (
-                            <div key={i} className="flex items-center justify-between p-4 bg-white/[0.02] rounded-2xl border border-white/5">
-                                <span className="text-xs font-bold text-gray-300">{c.courseName}</span>
+                            <div key={i} className="flex items-center justify-between p-4 rounded-2xl border border-white/5">
+                                <span className="text-xs font-bold ">{c.courseName}</span>
                                 <span className="text-[10px] font-black text-blue-500 italic">₹{c.courseFee}</span>
                             </div>
                         ))}
@@ -111,8 +111,8 @@ const DashboardHome = () => {
 
             {/* DESKTOP ONLY: CHARTS (Hidden on Phone) */}
             <div className="hidden md:grid grid-cols-2 gap-8 h-[400px]">
-                <div className="bg-[#121418] border border-white/5 rounded-[2.5rem] p-8">
-                    <h3 className="text-[10px] font-black text-gray-500 uppercase mb-6 tracking-widest">Growth Analytics</h3>
+                <div className="border border-white/5 rounded-[2.5rem] p-8">
+                    <h3 className="text-[10px] font-black uppercase mb-6 tracking-widest">Growth Analytics</h3>
                     <ResponsiveContainer width="100%" height="80%">
                         <BarChart data={chartData}>
                             <XAxis dataKey="name" stroke="#334155" fontSize={10} tickLine={false} axisLine={false} />
@@ -122,8 +122,8 @@ const DashboardHome = () => {
                     </ResponsiveContainer>
                 </div>
 
-                <div className="bg-[#121418] border border-white/5 rounded-[2.5rem] p-8">
-                    <h3 className="text-[10px] font-black text-gray-500 uppercase mb-6 tracking-widest">Pipeline Health</h3>
+                <div className="border border-white/5 rounded-[2.5rem] p-8">
+                    <h3 className="text-[10px] font-black  uppercase mb-6 tracking-widest">Pipeline Health</h3>
                     <ResponsiveContainer width="100%" height="80%">
                         <PieChart>
                             <Pie data={statusDist} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
@@ -146,11 +146,11 @@ const DashboardHome = () => {
 
 // Reusable Components
 const StatBox = ({ label, val, icon: Icon, color, className = "" }) => (
-    <div className={`bg-[#121418] border border-white/5 p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] flex items-center gap-4 md:gap-6 shadow-xl ${className}`}>
-        <div className={`p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 ${color}`}><Icon size={18} /></div>
+    <div className={` border border-white/5 p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] flex items-center gap-4 md:gap-6 shadow-xl ${className}`}>
+        <div className={`p-3 md:p-4 rounded-xl md:rounded-2xl  ${color}`}><Icon size={18} /></div>
         <div>
-            <p className="text-[8px] md:text-[10px] font-black text-gray-600 uppercase tracking-widest">{label}</p>
-            <p className="text-xl md:text-3xl font-black text-white italic leading-tight">{val}</p>
+            <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest">{label}</p>
+            <p className="text-xl md:text-3xl font-black  italic leading-tight">{val}</p>
         </div>
     </div>
 );
@@ -158,8 +158,8 @@ const StatBox = ({ label, val, icon: Icon, color, className = "" }) => (
 
 const QuickAction = ({ icon, label, bg }) => (
     <div className={`${bg} p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition-transform active:scale-95`}>
-        <div className="text-white text-lg">{icon}</div>
-        <span className="text-[10px] font-black text-white uppercase tracking-tighter">{label}</span>
+        <div className=" text-lg">{icon}</div>
+        <span className="text-[10px] font-black  uppercase tracking-tighter">{label}</span>
     </div>
 );
 <Footer />

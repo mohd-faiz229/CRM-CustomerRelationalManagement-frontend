@@ -28,12 +28,12 @@ const CustomSelect = ({ options, value, onChange, placeholder, error }) => {
                 `}
             >
                 {/* Changed text color from PrimaryBlue to white/opacity variants */}
-                <span className={`text-sm ${value ? "text-white font-medium" : "text-white/60"}`}>
+                <span className={`text-sm ${value ? "font-medium" : ""}`}>
                     {selectedOption ? selectedOption.label : placeholder}
                 </span>
 
                 <svg
-                    className={`w-4 h-4 ml-2 transition-transform duration-300 text-white/70 ${open ? "rotate-180" : ""}`}
+                    className={`w-4 h-4 ml-2 transition-transform duration-300  ${open ? "rotate-180" : ""}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -54,8 +54,8 @@ const CustomSelect = ({ options, value, onChange, placeholder, error }) => {
                                 }}
                                 className={`px-3 py-2.5 my-0.5 cursor-pointer rounded-xl text-sm transition-all duration-200
                                     ${value === opt.value
-                                        ? "bg-white text-slate-900 font-bold shadow-md"
-                                        : "text-white/80 hover:bg-white/10 hover:text-white"
+                                        ? " text-slate-900 font-bold shadow-md"
+                                        : " hover:bg-white/10 "
                                     }`}
                             >
                                 {opt.label}
