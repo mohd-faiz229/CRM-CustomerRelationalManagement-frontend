@@ -158,7 +158,7 @@ const Login = () => {
                         disabled={loading}
                         className="w-full py-4 bg-blue-600 hover:bg-blue-500 font-bold rounded-2xl shadow-lg shadow-blue-600/20 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3 mt-6 text-sm uppercase tracking-widest"
                     >
-                        {loading ? "Processing..." : "Log in"}
+                        {loading ? "Logging in..." : "Log in"}
                         {!loading && <FaArrowRight size={14} />}
                     </button>
                 </form>
