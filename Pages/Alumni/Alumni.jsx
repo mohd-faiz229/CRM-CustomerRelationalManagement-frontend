@@ -54,7 +54,7 @@ const Alumni = () => {
                         >
                             {/* Top Row: Initial and Status */}
                             <div className="flex justify-between items-start mb-4">
-                                <div className="w-10 h-10 rounded-lg bg-[#1E293B] border border-white/10 flex items-center justify-center text-blue-400 font-bold">
+                                <div className="w-10 h-10 rounded-lg  border border-white/10 flex items-center justify-center text-blue-400 font-bold">
                                     {alumni.name.charAt(0)}
                                 </div>
                                 <span className={`text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${alumni.status === 'Placed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
@@ -91,7 +91,7 @@ const Alumni = () => {
 
                             {/* Footer: Last Contact and Action */}
                             <div className="flex items-center justify-between">
-                                <span className="text-[11px] ">
+                                <span className="text-[11px] text-white ">
                                     Last Active: <span className="text-white">{alumni.lastContact}</span>
                                 </span>
 
