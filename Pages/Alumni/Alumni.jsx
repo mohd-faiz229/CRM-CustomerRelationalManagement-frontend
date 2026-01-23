@@ -42,9 +42,7 @@ const Alumni = () => {
                         <h2 className="text-3xl font-bold ">Alumni Database</h2>
                         <p className="mt-2 text-slate-400">Manage placement records and post-hiring career tracking.</p>
                     </div>
-                    <button className="bg-blue-600 hover:bg-blue-500  px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-600/20">
-                        + Add Record
-                    </button>
+                   
                 </div>
 
                 {/* CRM Card Grid */}
@@ -94,7 +92,7 @@ const Alumni = () => {
                             {/* Footer: Last Contact and Action */}
                             <div className="flex items-center justify-between">
                                 <span className="text-[11px] ">
-                                    Last Active: <span className="">{alumni.lastContact}</span>
+                                    Last Active: <span className="text-white">{alumni.lastContact}</span>
                                 </span>
 
                             </div>
