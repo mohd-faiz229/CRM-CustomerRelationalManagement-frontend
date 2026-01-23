@@ -132,7 +132,7 @@ const Students = () => {
                     {editingId === student._id ? (
                       <div className="flex items-center gap-2 w-48 scale-90 origin-left">
                         <CustomSelect
-                          value={editedStatus}
+                          value={student.status || "pending"}
                           options={statusOptions}
                           onChange={(val) => setEditedStatus(val)}
                         />
