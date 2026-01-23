@@ -9,7 +9,6 @@ import CustomSelect from "../../Components/CustomSelect/CustomSelect.jsx";
 const statusOptions = [
   { value: "pending", label: "Pending", color: "text-amber-400 bg-amber-400/10 border-amber-400/20" },
   { value: "active", label: "Active", color: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20" },
-  { value: "graduated", label: "Graduated", color: "text-blue-400 bg-blue-400/10 border-blue-400/20" },
   { value: "dropped", label: "Dropped", color: "text-rose-400 bg-rose-400/10 border-rose-400/20" },
 ];
 
