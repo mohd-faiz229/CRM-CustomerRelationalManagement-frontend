@@ -11,7 +11,6 @@ import { ImBooks } from "react-icons/im";
 import { NavTabItems } from '../../utils/NavTabItems.js';
 
 const IconMap = {
-
     "Dashboard": FaHome,
     "Courses": ImBooks,
     "Add Student": FaPlusCircle,
@@ -24,35 +23,26 @@ const IconMap = {
     "Students": FaGraduationCap
 };
 
-
-const Sidebar = ({ userData, isMobileOpen, setIsMobileOpen }) => {
-
-    const { logout } = useAuth();
+const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
+    const { user, logout } = useAuth(); // <-- use AuthContext directly
     const [searchQuery, setSearchQuery] = useState("");
     const location = useLocation();
 
-    const userRole = userData?.role?.toLowerCase().trim() || "";
-    const userName = userData?.name || "User";
-    const userAvatar = userData?.profileImage?.url;
+    const userRole = user?.role?.toLowerCase().trim() || "";
+    const userName = user?.name || "User";
+    const userAvatar = user?.profileImage || null; // <- use normalized profileImage
 
     const filteredLinks = useMemo(() => {
         return NavTabItems.filter(link => {
-            // 1. Role Authorization (Admin bypasses, others must be in allowedRoles)
             const isAuthorized = userRole === 'admin' || link.allowedRoles.includes(userRole);
-
-            // 2. Specific Business Rules (e.g., hiding specific links from non-admins)
             const isHidden = link.label === "Add New User" && userRole !== 'admin';
-
-            // 3. Search Filter
             const matchesSearch = link.label.toLowerCase().includes(searchQuery.toLowerCase());
-
             return isAuthorized && !isHidden && matchesSearch;
         });
     }, [userRole, searchQuery]);
 
     return (
         <>
-            {/* Hamburger Trigger - Fixed position, matches Login Button Style */}
             {!isMobileOpen && (
                 <button
                     onClick={() => setIsMobileOpen(true)}
@@ -62,14 +52,12 @@ const Sidebar = ({ userData, isMobileOpen, setIsMobileOpen }) => {
                 </button>
             )}
 
-            {/* Backdrop - Smooth Fade Only */}
+            {/*  Backdrop Section */}
             <div
-                className={`fixed inset-0   transition-opacity duration-[.5s] ease-in-out ${isMobileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-in-out z-[70] ${isMobileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
                     }`}
                 onClick={() => setIsMobileOpen(false)}
             />
-
-            {/* Sidebar - GPU Accelerated Transform Only (Zero Jitter) */}
             <aside
                 className={`
                     bg-[#0f172a]
@@ -79,7 +67,6 @@ const Sidebar = ({ userData, isMobileOpen, setIsMobileOpen }) => {
                     ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
                 `}
             >
-                {/* Header */}
                 <header className="pt-10 pb-6 px-8 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-9 h-9 bg-blue-600 text-white rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
@@ -102,18 +89,18 @@ const Sidebar = ({ userData, isMobileOpen, setIsMobileOpen }) => {
                             const Icon = IconMap[link.label] || FaFileAlt;
 
                             return (
-                                <li key={link.path}>
+                                <li key={`${link.path}-${link.label}`}>
                                     <Link
                                         to={link.path}
                                         onClick={() => setIsMobileOpen(false)}
-                                        className={`flex  text-white items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 group border
-                            ${isActive
+                                        className={`flex text-white items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 group border
+                ${isActive
                                                 ? 'bg-blue-600/10 border-blue-500/30'
-                                                : 'bg-transparent border-transparent  hover:bg-blue-50 dark:hover:bg-blue-700/20 '
+                                                : 'bg-transparent border-transparent hover:bg-blue-50 dark:hover:bg-blue-700/20'
                                             }`}
                                     >
                                         <Icon
-                                            size={18} // Slightly larger for better visual weight
+                                            size={18}
                                             className={`transition-colors duration-300 ${isActive
                                                 ? 'text-[var(--accent-color)]'
                                                 : ' text-[var(--text-muted)] group-hover:text-[var(--accent-color)] h-4'
@@ -129,7 +116,6 @@ const Sidebar = ({ userData, isMobileOpen, setIsMobileOpen }) => {
                     </ul>
                 </nav>
 
-                {/* Profile & Footer */}
                 <footer className="p-4 mt-auto space-y-2">
                     <Link
                         to="/dashboard/profile"

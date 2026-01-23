@@ -16,12 +16,11 @@ const AddCourse = () => {
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-
         if (name === "courseImage") {
             const file = files[0];
             if (file) {
                 setFormData({ ...formData, courseImage: file });
-                setPreview(URL.createObjectURL(file)); // Create local preview URL
+                setPreview(URL.createObjectURL(file));
             }
         } else {
             setFormData({ ...formData, [name]: value });
@@ -30,13 +29,11 @@ const AddCourse = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Brutal Validation: Don't let empty requests hit your server
         if (!formData.courseImage) return toast.error("Course image is mandatory");
         if (Number(formData.courseFee) <= 0) return toast.error("Fee must be a positive number");
 
         setIsSubmitting(true);
-        const toastId = toast.loading("Uploading course assets...");
+        const toastId = toast.loading("Adding course assets...");
 
         const data = new FormData();
         data.append("courseName", formData.courseName.trim());
@@ -46,20 +43,11 @@ const AddCourse = () => {
         data.append("courseImage", formData.courseImage);
 
         try {
-            await callApi.post('/counsellor/createCourse', data, {
+            await callApi.post('/counsellor/course', data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-
             toast.success("Course published successfully!", { id: toastId });
-
-            // Reset Form and Preview
-            setFormData({
-                courseName: '',
-                courseDuration: '',
-                courseFee: '',
-                courseDescription: '',
-                courseImage: null
-            });
+            setFormData({ courseName: '', courseDuration: '', courseFee: '', courseDescription: '', courseImage: null });
             setPreview(null);
         } catch (err) {
             const errorMsg = err.response?.data?.message || "Upload failed";
@@ -70,42 +58,37 @@ const AddCourse = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
-            <header className="mb-8">
-                <h2 className="text-3xl font-black tracking-tight italic">Curriculum Expansion</h2>
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] mt-1">Create New Educational Track</p>
+        <div className="max-w-3xl mx-auto px-4">
+            <header className="mb-6">
+                <h2 className="text-2xl font-black tracking-tight italic ">Curriculum Expansion</h2>
+                <p className="text-[9px] font-black uppercase tracking-[0.3em] mt-1 text-blue-500">Create New Educational Track</p>
             </header>
 
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6  border border-white/5 p-8 rounded-[2.5rem] shadow-2xl">
+            {/* Tightened p-6 and gap-5 */}
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5 border border-slate-800 p-6 rounded-[1.5rem] shadow-2xl">
 
-                {/* Course Name */}
                 <InputField label="Course Title" name="courseName" value={formData.courseName} onChange={handleChange} placeholder="e.g. Full Stack Development" required />
-
-                {/* Duration */}
                 <InputField label="Duration" name="courseDuration" value={formData.courseDuration} onChange={handleChange} placeholder="e.g. 6 Months" required />
-
-                {/* Fee */}
                 <InputField label="Tuition Fee (USD/INR)" type="number" name="courseFee" value={formData.courseFee} onChange={handleChange} placeholder="0.00" required />
 
-                {/* File Upload Area */}
-                <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase ml-2 tracking-widest">Course Banner</label>
+                <div className="space-y-1.5">
+                    <label className="text-[9px] font-black uppercase ml-1 tracking-widest text-slate-400">Course Banner</label>
                     <div className="relative group">
                         {!preview ? (
-                            <label className="flex flex-col items-center justify-center w-full h-14 border border-dashed border-white/10 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
-                                <div className="flex items-center gap-2">
-                                    <FaCloudUploadAlt size={18} />
-                                    <span className="text-xs font-bold">Upload Image</span>
+                            <label className="flex flex-col items-center justify-center w-full h-[42px] border border-dashed border-slate-700 rounded-xl cursor-pointer hover:border-blue-500/50 transition-all ">
+                                <div className="flex items-center gap-2  group-hover:text-blue-400">
+                                    <FaCloudUploadAlt size={14} />
+                                    <span className="text-[10px] font-bold">Upload Image</span>
                                 </div>
                                 <input type="file" name="courseImage" accept="image/*" onChange={handleChange} className="hidden" />
                             </label>
                         ) : (
-                            <div className="relative h-14 w-full rounded-2xl overflow-hidden border border-white/10">
-                                <img src={preview} alt="Preview" className="w-full h-full object-cover opacity-50" />
-                                <div className="absolute inset-0 flex items-center justify-between px-4">
-                                    <span className="text-[10px]  font-bold truncate max-w-[150px]">{formData.courseImage?.name}</span>
+                            <div className="relative h-[42px] w-full rounded-xl overflow-hidden border border-slate-700 ">
+                                <img src={preview} alt="Preview" className="w-full h-full object-cover opacity-30" />
+                                <div className="absolute inset-0 flex items-center justify-between px-3">
+                                    <span className="text-[9px]  font-bold truncate max-w-[120px]">{formData.courseImage?.name}</span>
                                     <button type="button" onClick={() => { setPreview(null); setFormData({ ...formData, courseImage: null }) }} className="text-red-500 hover:text-red-400">
-                                        <FaTrash size={12} />
+                                        <FaTrash size={10} />
                                     </button>
                                 </div>
                             </div>
@@ -113,16 +96,15 @@ const AddCourse = () => {
                     </div>
                 </div>
 
-                {/* Description */}
-                <div className="md:col-span-2 space-y-2">
-                    <label className="text-[10px] font-black  uppercase ml-2 tracking-widest">Course Curriculum Overview</label>
+                <div className="md:col-span-2 space-y-1.5">
+                    <label className="text-[9px] font-black uppercase ml-1 tracking-widest text-slate-400">Course Curriculum Overview</label>
                     <textarea
                         name="courseDescription"
                         value={formData.courseDescription}
                         onChange={handleChange}
-                        rows="4"
+                        rows="3"
                         placeholder="Detail the modules, technologies, and outcomes..."
-                        className="w-full  border border-white/5 rounded-2xl p-4 text-xs font-bold  outline-none focus:border-blue-500 transition-all resize-none"
+                        className="w-full  border border-slate-700 rounded-xl p-3 text-xs font-bold outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all resize-none placeholder:text-slate-600"
                         required
                     />
                 </div>
@@ -130,7 +112,7 @@ const AddCourse = () => {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="md:col-span-2 bg-blue-600 hover:bg-blue-500 py-5 rounded-[1.5rem] text-[10px] font-black  uppercase tracking-[0.2em] transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50"
+                    className="md:col-span-2 bg-blue-600 hover:bg-blue-500 py-3.5 mt-2 rounded-xl text-[10px] font-black  uppercase tracking-[0.2em] transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50"
                 >
                     {isSubmitting ? "Adding ..." : "Add Course"}
                 </button>
@@ -139,14 +121,13 @@ const AddCourse = () => {
     );
 };
 
-// Reusable Input Sub-component
 const InputField = ({ label, type = "text", ...props }) => (
-    <div className="space-y-2">
-        <label className="text-[10px] font-black uppercase ml-2 tracking-widest">{label}</label>
+    <div className="space-y-1.5">
+        <label className="text-[9px] font-black uppercase ml-1 tracking-widest text-slate-400">{label}</label>
         <input
             type={type}
             {...props}
-            className="w-full  border border-white/5 rounded-2xl p-4 text-xs font-bold  outline-none focus:border-blue-500 transition-all"
+            className="w-full h-[42px] border border-slate-700 rounded-xl px-4 text-xs font-bold outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all placeholder:text-slate-600"
         />
     </div>
 );

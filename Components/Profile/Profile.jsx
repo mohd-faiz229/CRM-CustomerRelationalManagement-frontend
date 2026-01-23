@@ -50,9 +50,9 @@ export default function Profile() {
 
     const handleSave = async () => {
         setUpdating(true);
-        const tid = toast.loading("Syncing profile data...");
+        const tid = toast.loading("Updating profile data...");
         try {
-            const res = await callApi.put(`admin/updateUser/${formData._id}`, {
+            const res = await callApi.put(`admin/user/${formData._id}`, {
                 name: formData.name,
                 email: formData.email,
                 phone: formData.phone,
@@ -76,12 +76,12 @@ export default function Profile() {
         if (!file) return toast.error("No file selected");
         if (file.size > 2 * 1024 * 1024) return toast.error("File too large (Max 2MB)");
 
-        const tid = toast.loading("Uploading avatar...");
+        const tid = toast.loading("Uploading profile image...");
         try {
             const data = new FormData();
             data.append("profileImage", file);
 
-            const res = await callApi.put(`/admin/updateUser/${formData._id}`, data, {
+            const res = await callApi.put(`/admin/user/${formData._id}`, data, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
 
@@ -89,7 +89,7 @@ export default function Profile() {
             updateAuthUser(updatedUser);
             setFormData(normalizeFormData(updatedUser));
 
-            toast.success("Avatar updated", { id: tid });
+            toast.success("Profile Image updated", { id: tid });
         } catch (err) {
             toast.error("Upload failed", { id: tid });
         }

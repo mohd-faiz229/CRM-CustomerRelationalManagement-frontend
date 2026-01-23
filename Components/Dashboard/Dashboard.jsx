@@ -14,6 +14,7 @@ import Courses from "../../Pages/Courses/Courses.jsx";
 import NewStudents from "../../Pages/NewStudents/NewStudents.jsx";
 import Placements from "../../Pages/Placements/Placements.jsx";
 import Resumes from "../../Pages/Resumes/Resumes.jsx";
+import Alumni from "../../Pages/Alumni/Alumni.jsx";
 
 const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -72,6 +73,7 @@ const Dashboard = () => {
                 <Route path="new-students" element={<NewStudents />} />
                 <Route path="placements" element={<Placements />} />
                 <Route path="resumes" element={<Resumes />} />
+                <Route path="alumni" element={<Alumni />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </motion.div>

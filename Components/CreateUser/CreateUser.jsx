@@ -61,7 +61,7 @@ export const CreateUser = () => {
             formData.append("password", data.password);
             if (file) formData.append("profileImage", file);
 
-            const res = await callApi.post("/admin/createUser", formData, {
+            const res = await callApi.post("/admin/user", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },

@@ -23,7 +23,7 @@ const CustomSelect = ({ options, value, onChange, placeholder, error }) => {
             <div
                 onClick={() => setOpen(!open)}
                 className={`w-full px-3 py-2 rounded-2xl cursor-pointer flex justify-between items-center transition-all duration-300 border
-                    ${open ? "bg-white/20 border-white/40" : "bg-white/10 border-white/20 hover:bg-white/15"} 
+                    ${open ? " border-white/40" : "bg-white/10  hover:bg-white/15"} 
                     ${error ? "border-red-500/50 bg-red-500/10" : ""}
                 `}
             >
@@ -43,7 +43,7 @@ const CustomSelect = ({ options, value, onChange, placeholder, error }) => {
             </div>
 
             {open && (
-                <div className="absolute z-50 mt-2 w-full backdrop-blur-xl bg-[#1e293b]/95 border border-white/20 rounded-2xl shadow-2xl max-h-48 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute z-50 mt-2 w-full backdrop-blur-xl  border border-white/20 rounded-2xl shadow-2xl max-h-48 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="p-1.5">
                         {options.map((opt) => (
                             <div
