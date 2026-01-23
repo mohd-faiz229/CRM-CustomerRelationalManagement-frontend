@@ -75,7 +75,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden font-sans  text-white">
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden font-sans  ">
             {/* Background Glows */}
             <div className="absolute top-[20%] left-[15%] w-72 h-72 bg-blue-600/20 blur-[120px] rounded-full" />
             <div className="absolute bottom-[10%] right-[15%] w-80 h-80 bg-purple-600/10 blur-[130px] rounded-full" />
