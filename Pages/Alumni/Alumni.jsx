@@ -39,10 +39,10 @@ const Alumni = () => {
             <div className="max-w-7xl mx-auto">
                 <div className="mb-10 flex justify-between items-center">
                     <div>
-                        <h2 className="text-3xl font-bold text-white">Alumni Database</h2>
+                        <h2 className="text-3xl font-bold ">Alumni Database</h2>
                         <p className="mt-2 text-slate-400">Manage placement records and post-hiring career tracking.</p>
                     </div>
-                    <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-600/20">
+                    <button className="bg-blue-600 hover:bg-blue-500  px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-600/20">
                         + Add Record
                     </button>
                 </div>
@@ -66,7 +66,7 @@ const Alumni = () => {
                             </div>
 
                             {/* Main Info */}
-                            <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">{alumni.name}</h3>
+                            <h3 className="text-lg font-bold  group-hover:text-blue-400 transition-colors">{alumni.name}</h3>
                             <p className="text-slate-500 text-xs font-medium mb-4">{alumni.batch}</p>
 
                             {/* CRM Metrics Grid */}
@@ -96,7 +96,7 @@ const Alumni = () => {
                                 <span className="text-[11px] ">
                                     Last Active: <span className="">{alumni.lastContact}</span>
                                 </span>
-                              
+
                             </div>
                         </div>
                     ))}
