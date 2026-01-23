@@ -50,7 +50,7 @@ const Alumni = () => {
                     {alumniData.map((alumni, index) => (
                         <div
                             key={index}
-                            className="bg-[#0F172A] rounded-2xl border border-white/5 p-6 hover:border-blue-500/30 transition-all group"
+                            className=" rounded-2xl border border-white/5 p-6 hover:border-blue-500/30 transition-all group"
                         >
                             {/* Top Row: Initial and Status */}
                             <div className="flex justify-between items-start mb-4">
