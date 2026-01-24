@@ -154,7 +154,7 @@ const AddStudent = () => {
                             disabled={isSubmitting}
                             className="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl text-[10px] font-black  uppercase tracking-[0.2em] transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50"
                         >
-                            {isSubmitting ? "Syncing..." : "Execute Enrollment"}
+                            {isSubmitting ? "Adding..." : "Add Student"}
                         </button>
                     </div>
                 </div>
